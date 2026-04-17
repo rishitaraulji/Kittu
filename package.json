@@ -1,0 +1,32 @@
+{
+  "name": "code_sandbox_light_284862f4_1775050501",
+  "version": "1.0.0",
+  "description": "A beautiful, mobile-first web application built for long-distance couples. Krisha keeps partners emotionally close through real-time mood syncing, secret sharing, quick love interactions, and emergency features — all wrapped in a romantic dark UI.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "copy:web": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"Copy-Item -Path index.html -Destination web/index.html -Force; if (Test-Path logo.png) { Copy-Item -Path logo.png -Destination web/logo.png -Force }\"",
+    "fix:java17": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$f1='android/app/capacitor.build.gradle'; if (Test-Path $f1) { (Get-Content $f1 -Raw).Replace('JavaVersion.VERSION_21','JavaVersion.VERSION_17') | Set-Content $f1 }; $f2='node_modules/@capacitor/local-notifications/android/build.gradle'; if (Test-Path $f2) { (Get-Content $f2 -Raw).Replace('JavaVersion.VERSION_21','JavaVersion.VERSION_17') | Set-Content $f2 }\"",
+    "android:add": "npx cap add android",
+    "android:sync": "npm run copy:web && npx cap sync android && npm run fix:java17",
+    "android:open": "npx cap open android",
+    "cap:sync": "npm run copy:web && npx cap sync android && npm run fix:java17",
+    "cap:sync:ios": "npm run copy:web && npx cap sync ios",
+    "cap:sync:all": "npm run copy:web && npx cap sync && npm run fix:java17",
+    "ios:add": "npx cap add ios",
+    "ios:sync": "npm run cap:sync:ios",
+    "ios:open": "npx cap open ios",
+    "apk:debug": "npm run cap:sync && cd android && gradlew.bat assembleDebug"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@capacitor/android": "^8.3.0",
+    "@capacitor/cli": "^8.3.0",
+    "@capacitor/core": "^8.3.0",
+    "@capacitor/ios": "^8.3.0",
+    "@capacitor/local-notifications": "^8.0.2"
+  }
+}
