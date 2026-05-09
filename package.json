@@ -5,11 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build --host",
     "start": "vite preview --host 0.0.0.0 --port $PORT",
     "preview": "vite preview"
   },
   "dependencies": {
+    "engines": {
+  "node": "20.x"
+},
     "@capacitor/android": "^8.3.0",
     "@capacitor/cli": "^8.3.0",
     "@capacitor/core": "^8.3.1",
