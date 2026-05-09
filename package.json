@@ -1,8 +1,12 @@
 {
   "name": "code_sandbox_light_284862f4_1775050501",
+  "private": true,
   "version": "1.0.0",
   "description": "A beautiful, mobile-first web application built for long-distance couples.",
   "type": "module",
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build --host",
@@ -10,9 +14,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "engines": {
-  "node": "20.x"
-},
     "@capacitor/android": "^8.3.0",
     "@capacitor/cli": "^8.3.0",
     "@capacitor/core": "^8.3.1",
