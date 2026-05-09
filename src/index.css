@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-primary: #0a0a0f;
+  --color-bg-secondary: #0d0d1a;
+  --color-bg-card: rgba(255, 45, 111, 0.07);
+  
+  --color-accent-primary: #ff2d6f;
+  --color-accent-secondary: #ff6b9d;
+  --color-accent-light: #ff4081;
+  --color-accent-soft: #ffb3c6;
+  
+  --color-text-primary: #ffffff;
+  --color-text-soft: #ffb3c6;
+  --color-text-muted: rgba(255, 179, 198, 0.6);
+  
+  --color-glass-bg: rgba(255, 255, 255, 0.05);
+  --color-glass-border: rgba(255, 45, 111, 0.2);
+  
+  --font-poppins: "Poppins", sans-serif;
+  --font-dancing: "Dancing Script", cursive;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    overflow: hidden;
+    font-family: var(--font-poppins);
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@layer utilities {
+  .shadow-glow-pink {
+    box-shadow: 0 0 20px rgba(255, 45, 111, 0.4);
+  }
+  .shadow-glow-strong {
+    box-shadow: 0 0 40px rgba(255, 45, 111, 0.6);
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .glass-card {
+    background-color: var(--color-glass-bg);
+    border: 1px solid var(--color-glass-border);
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    backdrop-filter: blur(24px);
+  }
+  
+  .btn-primary {
+    width: 100%;
+    max-width: 300px;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 9999px;
+    background-image: linear-gradient(to bottom right, var(--color-accent-primary), var(--color-accent-secondary));
+    color: white;
+    font-family: var(--font-poppins);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
+    box-shadow: 0 8px 30px rgba(255,45,111,0.4);
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary:hover, .btn-primary:active {
+    transform: translateY(-0.125rem);
+    box-shadow: 0 12px 40px rgba(255,45,111,0.6);
+  }
+}
