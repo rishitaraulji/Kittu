@@ -21,7 +21,7 @@ const Splash = () => {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="relative mb-8"
       >
-        <img src="/logo.png" alt="Krisha Logo" className="w-28 h-28 rounded-3xl shadow-glow-strong object-cover" />
+        <img src="/logo.svg" alt="Krisha Logo" className="w-28 h-28 rounded-3xl shadow-glow-strong object-cover" />
         <motion.div 
           animate={{ rotate: 360 }}
           transition={{ duration: 4, repeat: Infinity, ease: "linear" }}

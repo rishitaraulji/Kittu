@@ -48,7 +48,7 @@ const Login = () => {
         animate={{ y: 0, opacity: 1 }}
         className="text-center mb-8"
       >
-        <img src="/logo.png" alt="Krisha" className="w-16 h-16 rounded-2xl shadow-glow-pink mx-auto mb-4 object-cover" />
+        <img src="/logo.svg" alt="Krisha" className="w-16 h-16 rounded-2xl shadow-glow-pink mx-auto mb-4 object-cover" />
         <h2 className="font-dancing text-3xl font-bold bg-gradient-to-br from-accent-primary to-accent-secondary bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(255,45,111,0.5)] mb-1">
           Welcome Back
         </h2>

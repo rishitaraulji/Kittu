@@ -8,9 +8,21 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc && vite build",
     "start": "vite preview --host 0.0.0.0 --port 10000",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "copy:web": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"if (Test-Path public/logo.svg) { New-Item -ItemType Directory -Force -Path web | Out-Null; Copy-Item -Path public/logo.svg -Destination web/logo.svg -Force }\"",
+    "fix:java17": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$f1='android/app/capacitor.build.gradle'; if (Test-Path $f1) { (Get-Content $f1 -Raw).Replace('JavaVersion.VERSION_21','JavaVersion.VERSION_17') | Set-Content $f1 }; $f2='node_modules/@capacitor/local-notifications/android/build.gradle'; if (Test-Path $f2) { (Get-Content $f2 -Raw).Replace('JavaVersion.VERSION_21','JavaVersion.VERSION_17') | Set-Content $f2 }\"",
+    "android:add": "npx cap add android",
+    "android:sync": "npm run build && npm run copy:web && npx cap sync android && npm run fix:java17",
+    "android:open": "npx cap open android",
+    "cap:sync": "npm run build && npm run copy:web && npx cap sync android && npm run fix:java17",
+    "cap:sync:ios": "npm run build && npm run copy:web && npx cap sync ios",
+    "cap:sync:all": "npm run build && npm run copy:web && npx cap sync && npm run fix:java17",
+    "ios:add": "npx cap add ios",
+    "ios:sync": "npm run cap:sync:ios",
+    "ios:open": "npx cap open ios",
+    "apk:debug": "npm run cap:sync && cd android && gradlew.bat assembleDebug"
   },
   "dependencies": {
     "@capacitor/android": "^8.3.0",

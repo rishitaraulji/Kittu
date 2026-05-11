@@ -30,6 +30,13 @@ const LiveCanvas = () => {
   const seenEventIdsRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
+    // When relationship changes (or user signs in/out), reset event de-dupe.
+    seenEventIdsRef.current = new Set();
+    lastPointRef.current = null;
+    setPartnerDrawing(false);
+  }, [relationshipId, userId]);
+
+  useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -61,7 +68,8 @@ const LiveCanvas = () => {
     // Firestore realtime sync (no server required)
     let unsubEvents: (() => void) | null = null;
     if (eventsRef && userId) {
-      const qy = query(eventsRef, orderBy('createdAt', 'desc'), limit(300));
+      // Important: replay events oldest -> newest, otherwise strokes can render out-of-order.
+      const qy = query(eventsRef, orderBy('createdAt', 'asc'), limit(300));
       unsubEvents = onSnapshot(qy, (snap) => {
         const changes = snap.docChanges();
         for (const ch of changes) {
