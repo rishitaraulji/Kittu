@@ -10,6 +10,7 @@ const MOODS: Mood[] = [
   { id: 'missing', emoji: '🥺', label: 'Missing You' },
   { id: 'sleepy', emoji: '😴', label: 'Sleepy' },
   { id: 'angry', emoji: '😡', label: 'Angry' },
+  { id: 'jealousy', emoji: '😒', label: 'Jealousy' },
   { id: 'hug', emoji: '🤗', label: 'Need Hug' },
   { id: 'cry', emoji: '😭', label: 'Crying' },
   { id: 'obsessed', emoji: '😍', label: 'Obsessed' },

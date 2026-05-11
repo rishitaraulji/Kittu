@@ -1,0 +1,2916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Krisha - Love knows no distance 💕</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+<style>
+/* ========================================
+   KRISHA APP - ROMANTIC DARK THEME
+   ======================================== */
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #0d0d1a;
+  --bg-card: rgba(255, 45, 111, 0.07);
+  --accent-primary: #ff2d6f;
+  --accent-secondary: #ff6b9d;
+  --accent-light: #ff4081;
+  --accent-soft: #ffb3c6;
+  --text-primary: #ffffff;
+  --text-soft: #ffb3c6;
+  --text-muted: rgba(255, 179, 198, 0.6);
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 45, 111, 0.2);
+  --glow-pink: 0 0 20px rgba(255, 45, 111, 0.4);
+  --glow-strong: 0 0 40px rgba(255, 45, 111, 0.6);
+  --purple: #a855f7;
+  --green: #22c55e;
+  --blue: #3b82f6;
+  --orange: #f97316;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  width: 100%; height: 100%;
+  background: var(--bg-primary);
+  font-family: 'Poppins', sans-serif;
+  color: var(--text-primary);
+  overflow: hidden;
+}
+
+/* ---- MOBILE WRAPPER ---- */
+#app-wrapper {
+  position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 430px; height: 100%;
+  overflow: hidden; background: var(--bg-primary);
+  box-shadow: 0 0 60px rgba(255, 45, 111, 0.15);
+}
+
+/* ---- PARTICLE CANVAS ---- */
+#particles-canvas {
+  position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+  width: 430px; max-width: 100%; height: 100%;
+  pointer-events: none; z-index: 0;
+}
+
+/* ---- SCREENS ---- */
+.screen {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  overflow-y: auto; overflow-x: hidden;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  transform: translateX(20px);
+  z-index: 1;
+  -webkit-overflow-scrolling: touch;
+}
+.screen.active {
+  opacity: 1; pointer-events: all;
+  transform: translateX(0);
+}
+.screen.slide-out {
+  opacity: 0; transform: translateX(-20px);
+}
+
+/* ---- SCROLLBAR STYLE ---- */
+.screen::-webkit-scrollbar { width: 0; }
+
+/* ========================================
+   SPLASH SCREEN
+   ======================================== */
+#screen-splash {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  min-height: 100%; background: var(--bg-primary);
+  padding: 40px 20px;
+}
+
+.splash-logo-container {
+  position: relative; margin-bottom: 30px;
+}
+
+.splash-logo-img {
+  width: 100px; height: 100px;
+  border-radius: 24px;
+  box-shadow: var(--glow-strong);
+  object-fit: cover;
+}
+
+.sparkle-orbit {
+  position: absolute; top: 50%; left: 50%;
+  width: 130px; height: 130px;
+  transform: translate(-50%, -50%);
+  animation: orbitSpin 4s linear infinite;
+}
+.sparkle-dot {
+  position: absolute; border-radius: 50%;
+  background: var(--accent-primary);
+  box-shadow: 0 0 12px var(--accent-primary), 0 0 24px rgba(255,45,111,0.5);
+}
+.sparkle-dot.s1 { width: 10px; height: 10px; top: 0; left: 50%; transform: translateX(-50%); }
+.sparkle-dot.s2 { width: 7px; height: 7px; bottom: 0; right: 10px; background: var(--accent-secondary); box-shadow: 0 0 10px var(--accent-secondary); }
+
+@keyframes orbitSpin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+.krisha-title {
+  font-family: 'Dancing Script', cursive;
+  font-size: 54px; font-weight: 700;
+  background: linear-gradient(135deg, #ff2d6f, #ff6b9d, #ffb3c6);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  filter: drop-shadow(0 0 20px rgba(255,45,111,0.6));
+  margin-bottom: 10px;
+  animation: titlePulse 3s ease-in-out infinite;
+}
+@keyframes titlePulse {
+  0%,100% { filter: drop-shadow(0 0 20px rgba(255,45,111,0.6)); }
+  50% { filter: drop-shadow(0 0 35px rgba(255,107,157,0.9)); }
+}
+
+.splash-tagline {
+  font-size: 15px; color: var(--text-soft);
+  letter-spacing: 0.5px; margin-bottom: 60px;
+  opacity: 0.85;
+}
+
+.btn-primary {
+  width: 100%; max-width: 300px;
+  padding: 16px 32px; border: none; border-radius: 50px;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  color: white; font-family: 'Poppins', sans-serif;
+  font-size: 16px; font-weight: 600;
+  cursor: pointer; transition: all 0.3s ease;
+  box-shadow: 0 8px 30px rgba(255,45,111,0.4);
+  position: relative; overflow: hidden;
+}
+.btn-primary:hover, .btn-primary:active {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(255,45,111,0.6);
+}
+.btn-primary::after {
+  content: ''; position: absolute;
+  top: 50%; left: 50%; width: 0; height: 0;
+  background: rgba(255,255,255,0.2); border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.4s, height 0.4s, opacity 0.4s;
+}
+.btn-primary:active::after { width: 200px; height: 200px; opacity: 0; }
+
+.link-text {
+  margin-top: 20px; font-size: 14px;
+  color: var(--text-muted); cursor: pointer;
+}
+.link-text span { color: var(--accent-secondary); font-weight: 600; }
+.link-text:hover span { text-decoration: underline; }
+
+/* ========================================
+   AUTH SCREENS (Register + Login)
+   ======================================== */
+.auth-screen {
+  padding: 60px 24px 40px;
+  min-height: 100%;
+  background: var(--bg-secondary);
+}
+
+.auth-header { text-align: center; margin-bottom: 32px; }
+.auth-logo-small {
+  width: 60px; height: 60px; border-radius: 16px;
+  box-shadow: var(--glow-pink); margin-bottom: 12px;
+  object-fit: cover;
+}
+.auth-title {
+  font-family: 'Dancing Script', cursive;
+  font-size: 28px; font-weight: 700;
+  background: linear-gradient(135deg, #ff2d6f, #ff6b9d);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; margin-bottom: 4px;
+  filter: drop-shadow(0 0 10px rgba(255,45,111,0.5));
+}
+.auth-subtitle { font-size: 13px; color: var(--text-muted); }
+
+.glass-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px; padding: 24px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.form-group { margin-bottom: 16px; }
+.form-label {
+  display: block; font-size: 12px;
+  color: var(--text-soft); margin-bottom: 6px;
+  font-weight: 500; letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.form-input {
+  width: 100%; padding: 14px 16px 14px 44px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 45, 111, 0.2);
+  border-radius: 14px; color: white;
+  font-family: 'Poppins', sans-serif; font-size: 14px;
+  outline: none; transition: all 0.3s ease;
+}
+.form-input::placeholder { color: rgba(255,179,198,0.4); }
+.form-input:focus {
+  border-color: var(--accent-primary);
+  background: rgba(255, 45, 111, 0.08);
+  box-shadow: 0 0 0 3px rgba(255, 45, 111, 0.15);
+}
+.input-wrapper { position: relative; }
+.input-icon {
+  position: absolute; left: 14px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--accent-secondary); font-size: 15px;
+}
+.input-toggle {
+  position: absolute; right: 14px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted); cursor: pointer; font-size: 14px;
+}
+
+.avatar-upload {
+  display: flex; flex-direction: column;
+  align-items: center; margin-bottom: 20px; cursor: pointer;
+}
+.avatar-circle {
+  width: 80px; height: 80px; border-radius: 50%;
+  background: var(--glass-bg);
+  border: 2px dashed var(--accent-primary);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; margin-bottom: 8px;
+  box-shadow: var(--glow-pink); transition: all 0.3s;
+  overflow: hidden; position: relative;
+}
+.avatar-circle:hover { box-shadow: var(--glow-strong); border-style: solid; }
+.avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
+.avatar-label { font-size: 12px; color: var(--text-soft); }
+
+.checkbox-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  margin-bottom: 20px;
+}
+.checkbox-custom {
+  width: 18px; height: 18px; min-width: 18px;
+  border-radius: 5px; border: 2px solid var(--accent-primary);
+  background: transparent; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; margin-top: 2px;
+}
+.checkbox-custom.checked {
+  background: var(--accent-primary);
+}
+.checkbox-custom.checked::after { content: '✓'; font-size: 11px; color: white; font-weight: bold; }
+.checkbox-text { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+.checkbox-text span { color: var(--accent-secondary); }
+
+/* Biometric Buttons */
+.biometric-row {
+  display: flex; gap: 12px; margin: 16px 0;
+}
+.biometric-btn {
+  flex: 1; padding: 16px 8px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px; cursor: pointer;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 8px;
+  transition: all 0.3s; position: relative; overflow: hidden;
+}
+.biometric-btn:hover, .biometric-btn:active {
+  border-color: var(--accent-primary);
+  background: rgba(255,45,111,0.1);
+  box-shadow: var(--glow-pink);
+}
+.biometric-icon { font-size: 32px; position: relative; }
+.biometric-label { font-size: 12px; color: var(--text-soft); font-weight: 500; }
+
+/* Touch ID animation */
+.fingerprint-glow {
+  animation: fingerprintPulse 2s ease-in-out infinite;
+}
+@keyframes fingerprintPulse {
+  0%,100% { filter: drop-shadow(0 0 4px rgba(255,45,111,0.3)); }
+  50% { filter: drop-shadow(0 0 16px rgba(255,45,111,0.9)); }
+}
+
+/* Face scan animation */
+.face-scan-container { position: relative; }
+.face-scan-line {
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px; background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+  animation: faceScan 2s linear infinite; border-radius: 2px;
+}
+@keyframes faceScan {
+  0% { top: 0; opacity: 1; }
+  100% { top: 36px; opacity: 0.3; }
+}
+
+.divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 20px 0;
+}
+.divider-line { flex: 1; height: 1px; background: rgba(255,45,111,0.2); }
+.divider-text { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+
+.forgot-link {
+  text-align: right; margin-top: -8px; margin-bottom: 12px;
+  font-size: 12px; color: var(--accent-secondary);
+  cursor: pointer; font-weight: 500;
+}
+
+/* ========================================
+   HOME DASHBOARD
+   ======================================== */
+#screen-home {
+  background: var(--bg-primary);
+  padding-bottom: 80px;
+}
+
+.home-topbar {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px;
+  background: rgba(10,10,15,0.9);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,45,111,0.1);
+}
+.topbar-logo {
+  font-family: 'Dancing Script', cursive;
+  font-size: 24px; font-weight: 700;
+  background: linear-gradient(135deg, #ff2d6f, #ff6b9d);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 8px rgba(255,45,111,0.5));
+}
+.topbar-right { display: flex; align-items: center; gap: 14px; }
+.notif-btn { position: relative; cursor: pointer; font-size: 20px; color: var(--text-soft); }
+.notif-badge {
+  position: absolute; top: -4px; right: -6px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--accent-primary); font-size: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; border: 1.5px solid var(--bg-primary);
+  animation: badgePop 0.3s ease;
+}
+@keyframes badgePop { from { transform: scale(0); } to { transform: scale(1); } }
+
+.user-avatar-small {
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 2px solid var(--accent-primary);
+  box-shadow: var(--glow-pink); cursor: pointer;
+  background: var(--bg-card); overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+
+.home-content { padding: 20px; }
+
+/* Partner Card */
+.partner-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px; padding: 20px;
+  backdrop-filter: blur(20px);
+  margin-bottom: 20px;
+  position: relative; overflow: hidden;
+}
+.partner-card::before {
+  content: ''; position: absolute;
+  top: -50%; right: -30%;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(255,45,111,0.1) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.partner-card-header {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 16px;
+}
+.partner-avatar {
+  width: 58px; height: 58px; border-radius: 50%;
+  border: 3px solid var(--accent-primary);
+  box-shadow: var(--glow-strong);
+  background: var(--bg-card); overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; flex-shrink: 0;
+}
+.partner-info { flex: 1; }
+.partner-name { font-size: 17px; font-weight: 600; color: white; }
+.partner-status {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--green); margin-top: 3px;
+}
+.status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: statusPulse 2s ease-in-out infinite;
+}
+@keyframes statusPulse {
+  0%,100% { box-shadow: 0 0 4px var(--green); opacity: 1; }
+  50% { box-shadow: 0 0 14px var(--green); opacity: 0.8; }
+}
+
+.partner-mood-display {
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(255,255,255,0.04); border-radius: 14px; padding: 12px 14px;
+}
+.partner-mood-emoji { font-size: 32px; }
+.partner-mood-info { flex: 1; }
+.partner-mood-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.partner-mood-text { font-size: 15px; font-weight: 600; color: var(--text-soft); margin-top: 2px; }
+.partner-mood-time { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+/* Miss/Love counters */
+.miss-love-row {
+  display: flex; gap: 10px; margin: 12px 0;
+}
+.counter-pill {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+  background: rgba(255,45,111,0.08); border: 1px solid rgba(255,45,111,0.15);
+  border-radius: 50px; padding: 8px 12px; font-size: 13px; font-weight: 500; color: var(--text-soft);
+}
+.counter-pill .count { color: var(--accent-primary); font-weight: 700; }
+
+.partner-message-box {
+  margin-top: 8px;
+  background: rgba(255, 45, 111, 0.1);
+  border: 1px solid rgba(255, 45, 111, 0.2);
+  border-radius: 14px;
+  padding: 10px 12px;
+}
+.partner-message-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+}
+.partner-message-text {
+  font-size: 13px;
+  color: var(--text-soft);
+  font-weight: 500;
+  line-height: 1.35;
+}
+.partner-message-time {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Mood Selector */
+.section-title {
+  font-size: 16px; font-weight: 600; color: white;
+  margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+}
+.section-title .emoji { font-size: 18px; }
+
+.mood-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 10px; margin-bottom: 24px;
+}
+.mood-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 12px 6px;
+  background: var(--glass-bg); border: 1px solid rgba(255,45,111,0.15);
+  border-radius: 16px; cursor: pointer; transition: all 0.25s;
+}
+.mood-btn:hover, .mood-btn:active, .mood-btn.selected {
+  background: rgba(255,45,111,0.15);
+  border-color: var(--accent-primary);
+  box-shadow: var(--glow-pink);
+  transform: scale(1.05);
+}
+.mood-btn .mood-emoji { font-size: 26px; }
+.mood-btn .mood-name { font-size: 10px; color: var(--text-muted); font-weight: 500; text-align: center; line-height: 1.2; }
+
+/* Quick Actions */
+.action-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 14px; margin-bottom: 24px;
+}
+.action-card {
+  padding: 20px 14px;
+  border-radius: 20px; cursor: pointer;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 8px;
+  transition: all 0.3s; position: relative; overflow: hidden;
+  border: 1px solid transparent;
+}
+.action-card:active { transform: scale(0.96); }
+.action-card .action-icon { font-size: 36px; transition: transform 0.3s; }
+.action-card:active .action-icon { transform: scale(1.2); }
+.action-card .action-label { font-size: 13px; font-weight: 600; text-align: center; }
+.action-card .action-sub { font-size: 11px; opacity: 0.7; text-align: center; }
+
+.action-miss {
+  background: linear-gradient(135deg, rgba(255,107,157,0.15), rgba(255,45,111,0.08));
+  border-color: rgba(255,107,157,0.3);
+  box-shadow: 0 4px 20px rgba(255,107,157,0.1);
+}
+.action-miss:hover { box-shadow: 0 8px 30px rgba(255,107,157,0.3); border-color: rgba(255,107,157,0.6); }
+
+.action-love {
+  background: linear-gradient(135deg, rgba(255,45,111,0.15), rgba(220,20,60,0.08));
+  border-color: rgba(255,45,111,0.3);
+  box-shadow: 0 4px 20px rgba(255,45,111,0.1);
+}
+.action-love:hover { box-shadow: 0 8px 30px rgba(255,45,111,0.4); border-color: rgba(255,45,111,0.7); }
+
+.action-secret {
+  background: linear-gradient(135deg, rgba(168,85,247,0.15), rgba(139,92,246,0.08));
+  border-color: rgba(168,85,247,0.3);
+  box-shadow: 0 4px 20px rgba(168,85,247,0.1);
+}
+.action-secret:hover { box-shadow: 0 8px 30px rgba(168,85,247,0.3); border-color: rgba(168,85,247,0.6); }
+
+.action-emergency {
+  background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(220,38,38,0.1));
+  border-color: rgba(239,68,68,0.4);
+  box-shadow: 0 4px 20px rgba(239,68,68,0.15);
+  animation: emergencyPulse 3s ease-in-out infinite;
+}
+@keyframes emergencyPulse {
+  0%,100% { box-shadow: 0 4px 20px rgba(239,68,68,0.15); }
+  50% { box-shadow: 0 4px 30px rgba(239,68,68,0.35); }
+}
+
+/* ========================================
+   BOTTOM NAVIGATION
+   ======================================== */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 430px; z-index: 200;
+  display: flex; background: rgba(13,13,26,0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255,45,111,0.15);
+  padding: 8px 0 env(safe-area-inset-bottom, 8px);
+}
+.nav-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; gap: 4px; padding: 8px 4px;
+  cursor: pointer; transition: all 0.3s;
+  color: var(--text-muted);
+}
+.nav-item.active { color: var(--accent-primary); }
+.nav-item i { font-size: 20px; transition: transform 0.2s; }
+.nav-item.active i { transform: scale(1.15); filter: drop-shadow(0 0 6px var(--accent-primary)); }
+.nav-label { font-size: 10px; font-weight: 500; }
+
+/* ========================================
+   SECRETS SCREEN
+   ======================================== */
+#screen-secrets { padding: 0 0 80px; background: var(--bg-primary); }
+
+.screen-header {
+  position: sticky; top: 0; z-index: 10;
+  padding: 20px 20px 16px;
+  background: rgba(10,10,15,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,45,111,0.1);
+}
+.screen-header-title {
+  font-size: 20px; font-weight: 700; color: white; margin-bottom: 2px;
+}
+.screen-header-sub { font-size: 13px; color: var(--text-muted); }
+
+.secrets-list { padding: 16px 20px; }
+
+.secret-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px; padding: 16px;
+  margin-bottom: 14px; cursor: pointer;
+  transition: all 0.3s; position: relative; overflow: hidden;
+}
+.secret-card:hover { transform: translateY(-2px); }
+.secret-card::before {
+  content: ''; position: absolute;
+  left: 0; top: 0; bottom: 0; width: 3px; border-radius: 3px 0 0 3px;
+}
+.secret-card.romantic::before { background: var(--accent-primary); }
+.secret-card.funny::before { background: #fbbf24; }
+.secret-card.dream::before { background: #60a5fa; }
+.secret-card.wish::before { background: #34d399; }
+.secret-card.thought::before { background: var(--purple); }
+
+.secret-card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px;
+}
+.secret-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 50px; font-size: 11px; font-weight: 600;
+}
+.tag-romantic { background: rgba(255,45,111,0.15); color: var(--accent-primary); }
+.tag-funny { background: rgba(251,191,36,0.15); color: #fbbf24; }
+.tag-dream { background: rgba(96,165,250,0.15); color: #60a5fa; }
+.tag-wish { background: rgba(52,211,153,0.15); color: #34d399; }
+.tag-thought { background: rgba(168,85,247,0.15); color: var(--purple); }
+
+.secret-time { font-size: 11px; color: var(--text-muted); }
+
+.secret-text {
+  font-size: 14px; line-height: 1.5; color: var(--text-primary);
+  transition: all 0.3s;
+}
+.secret-text.blurred { filter: blur(8px); color: var(--text-soft); }
+
+.secret-footer {
+  display: flex; align-items: center; justify-content: space-between; margin-top: 10px;
+}
+.secret-sender { font-size: 12px; color: var(--text-muted); }
+.secret-reveal-hint { font-size: 11px; color: var(--accent-secondary); }
+
+.fab-btn {
+  position: fixed; bottom: 90px; right: calc(50% - 215px + 20px);
+  width: 56px; height: 56px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; color: white;
+  box-shadow: 0 8px 24px rgba(255,45,111,0.5);
+  transition: all 0.3s; z-index: 150;
+}
+.fab-btn:hover { transform: scale(1.1) rotate(90deg); box-shadow: 0 12px 32px rgba(255,45,111,0.7); }
+
+/* ========================================
+   MOOD TRACKER SCREEN
+   ======================================== */
+#screen-mood { padding: 0 0 80px; background: var(--bg-primary); }
+.mood-big { font-size: 80px; text-align: center; margin: 10px 0; animation: moodFloat 3s ease-in-out infinite; }
+@keyframes moodFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.mood-aura {
+  width: 120px; height: 120px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 10px; font-size: 60px;
+  background: radial-gradient(circle, rgba(255,45,111,0.2), transparent 70%);
+  animation: auraBreath 3s ease-in-out infinite;
+}
+@keyframes auraBreath {
+  0%,100% { box-shadow: 0 0 30px rgba(255,45,111,0.3); }
+  50% { box-shadow: 0 0 60px rgba(255,45,111,0.5); }
+}
+
+.mood-history-row {
+  display: flex; gap: 8px; justify-content: center;
+  flex-wrap: nowrap; overflow-x: auto; padding: 10px 0;
+}
+.mood-history-item {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  min-width: 42px;
+}
+.mood-history-emoji { font-size: 22px; }
+.mood-history-day { font-size: 10px; color: var(--text-muted); }
+
+/* ========================================
+   PROFILE SCREEN
+   ======================================== */
+#screen-profile { padding: 0 0 80px; background: var(--bg-primary); }
+
+.profile-hero {
+  padding: 40px 20px 24px; text-align: center;
+  background: linear-gradient(180deg, rgba(255,45,111,0.08) 0%, transparent 100%);
+}
+.profile-avatar-large {
+  width: 90px; height: 90px; border-radius: 50%;
+  border: 3px solid var(--accent-primary);
+  box-shadow: var(--glow-strong);
+  background: var(--bg-card); overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 44px; margin: 0 auto 14px; position: relative;
+  cursor: pointer;
+}
+.profile-avatar-large img { width: 100%; height: 100%; object-fit: cover; }
+.profile-name { font-size: 22px; font-weight: 700; color: white; margin-bottom: 4px; }
+.profile-email { font-size: 13px; color: var(--text-muted); }
+
+.profile-section { padding: 0 20px; margin-bottom: 20px; }
+.profile-section-title {
+  font-size: 12px; text-transform: uppercase; letter-spacing: 1px;
+  color: var(--text-muted); font-weight: 600; margin-bottom: 10px; padding-left: 4px;
+}
+
+.menu-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px; background: var(--glass-bg);
+  border: 1px solid rgba(255,45,111,0.1);
+  border-radius: 14px; margin-bottom: 8px;
+  cursor: pointer; transition: all 0.3s;
+}
+.menu-item:hover, .menu-item:active {
+  background: rgba(255,45,111,0.08); border-color: rgba(255,45,111,0.3);
+}
+.menu-item-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.menu-item-text { flex: 1; }
+.menu-item-label { font-size: 14px; font-weight: 500; color: white; }
+.menu-item-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.menu-item-arrow { color: var(--text-muted); font-size: 14px; }
+
+.icon-pink { background: rgba(255,45,111,0.12); color: var(--accent-primary); }
+.icon-purple { background: rgba(168,85,247,0.12); color: var(--purple); }
+.icon-blue { background: rgba(59,130,246,0.12); color: var(--blue); }
+.icon-green { background: rgba(34,197,94,0.12); color: var(--green); }
+.icon-red { background: rgba(239,68,68,0.15); color: #ef4444; }
+.icon-orange { background: rgba(249,115,22,0.12); color: var(--orange); }
+
+.partner-connected-card {
+  background: linear-gradient(135deg, rgba(255,45,111,0.1), rgba(168,85,247,0.05));
+  border: 1px solid rgba(255,45,111,0.25); border-radius: 18px; padding: 16px 18px;
+  display: flex; align-items: center; gap: 14px; margin-bottom: 20px; position: relative; overflow: hidden;
+}
+.connected-heart-icon { font-size: 36px; }
+.connected-info { flex: 1; }
+.connected-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
+.connected-name { font-size: 16px; font-weight: 600; color: white; margin-top: 2px; }
+.connected-since { font-size: 11px; color: var(--accent-secondary); margin-top: 2px; }
+
+.btn-danger {
+  width: 100%; padding: 15px;
+  background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
+  border-radius: 14px; color: #ef4444; font-family: 'Poppins', sans-serif;
+  font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s;
+}
+.btn-danger:hover { background: rgba(239,68,68,0.2); box-shadow: 0 0 20px rgba(239,68,68,0.2); }
+
+.btn-outline {
+  width: 100%; padding: 15px;
+  background: transparent; border: 1px solid var(--glass-border);
+  border-radius: 14px; color: var(--text-soft); font-family: 'Poppins', sans-serif;
+  font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; margin-bottom: 8px;
+}
+.btn-outline:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+
+/* ========================================
+   MODALS
+   ======================================== */
+.modal-overlay {
+  position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 430px; height: 100%;
+  background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+  z-index: 300; display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+
+.modal-sheet {
+  width: 100%; background: var(--bg-secondary);
+  border-radius: 28px 28px 0 0;
+  padding: 24px 24px 40px;
+  border: 1px solid rgba(255,45,111,0.15);
+  border-bottom: none;
+  transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.modal-overlay.open .modal-sheet { transform: translateY(0); }
+
+.modal-handle {
+  width: 36px; height: 4px; border-radius: 2px;
+  background: rgba(255,45,111,0.3); margin: 0 auto 20px;
+}
+.modal-title { font-size: 18px; font-weight: 700; color: white; margin-bottom: 16px; }
+
+.secret-categories {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;
+}
+.cat-btn {
+  padding: 6px 14px; border-radius: 50px; font-size: 12px; font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: all 0.2s;
+  background: transparent;
+}
+.cat-btn.selected, .cat-btn:hover { transform: scale(1.05); }
+.cat-romantic { color: var(--accent-primary); border-color: var(--accent-primary); }
+.cat-romantic.selected { background: rgba(255,45,111,0.15); }
+.cat-funny { color: #fbbf24; border-color: #fbbf24; }
+.cat-funny.selected { background: rgba(251,191,36,0.15); }
+.cat-dream { color: #60a5fa; border-color: #60a5fa; }
+.cat-dream.selected { background: rgba(96,165,250,0.15); }
+.cat-wish { color: #34d399; border-color: #34d399; }
+.cat-wish.selected { background: rgba(52,211,153,0.15); }
+.cat-thought { color: var(--purple); border-color: var(--purple); }
+.cat-thought.selected { background: rgba(168,85,247,0.15); }
+
+.form-textarea {
+  width: 100%; padding: 14px 16px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,45,111,0.2);
+  border-radius: 14px; color: white;
+  font-family: 'Poppins', sans-serif; font-size: 14px;
+  outline: none; resize: none;
+  transition: all 0.3s; min-height: 100px;
+}
+.form-textarea:focus {
+  border-color: var(--accent-primary);
+  background: rgba(255,45,111,0.06);
+  box-shadow: 0 0 0 3px rgba(255,45,111,0.1);
+}
+.form-textarea::placeholder { color: rgba(255,179,198,0.4); }
+
+/* Emergency Modal */
+.emergency-actions { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+.emergency-btn {
+  padding: 14px; border-radius: 14px; border: none;
+  font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: all 0.3s;
+}
+.emergency-call { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
+.emergency-sos { background: linear-gradient(135deg, #f97316, #ea580c); color: white; }
+.emergency-ok { background: rgba(255,255,255,0.08); color: var(--text-soft); border: 1px solid rgba(255,255,255,0.1); }
+.emergency-icon-big { font-size: 48px; text-align: center; margin: 10px 0; animation: emergencyBounce 0.6s ease infinite alternate; }
+@keyframes emergencyBounce { from { transform: scale(1); } to { transform: scale(1.1); } }
+
+/* Notification Panel */
+.notif-panel {
+  position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 430px; height: 100%;
+  background: rgba(10,10,15,0.97);
+  z-index: 400; padding: 20px;
+  transform: translateX(calc(-50% + 430px));
+  transition: transform 0.3s ease;
+}
+.notif-panel.open { transform: translateX(-50%); }
+.notif-panel-header {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-top: 20px;
+}
+.notif-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px; background: var(--glass-bg);
+  border: 1px solid var(--glass-border); border-radius: 14px; margin-bottom: 10px;
+}
+.notif-icon { font-size: 22px; flex-shrink: 0; }
+.notif-content { flex: 1; }
+.notif-msg { font-size: 13px; color: white; line-height: 1.4; }
+.notif-time { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+.notif-unread { border-color: rgba(255,45,111,0.4); background: rgba(255,45,111,0.06); }
+
+/* ========================================
+   TOAST NOTIFICATIONS
+   ======================================== */
+#toast-container {
+  position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+  width: 90%; max-width: 380px; z-index: 9999;
+  display: flex; flex-direction: column; gap: 8px; pointer-events: none;
+}
+.toast {
+  padding: 14px 18px; border-radius: 14px;
+  background: rgba(20,20,35,0.95); border: 1px solid rgba(255,45,111,0.3);
+  backdrop-filter: blur(20px); color: white;
+  font-size: 13px; font-weight: 500;
+  display: flex; align-items: center; gap: 10px;
+  animation: toastIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5), 0 0 20px rgba(255,45,111,0.15);
+  pointer-events: all;
+}
+.toast.toast-exit { animation: toastOut 0.3s ease forwards; }
+.toast-icon { font-size: 18px; }
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(-20px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes toastOut {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(-20px) scale(0.9); }
+}
+
+/* ========================================
+   HEARTS ANIMATION OVERLAY
+   ======================================== */
+#hearts-overlay {
+  position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 430px; height: 100%;
+  pointer-events: none; z-index: 1000; overflow: hidden;
+}
+.floating-heart {
+  position: absolute; bottom: -50px; font-size: 24px;
+  animation: heartFloat 3s ease-in-out forwards;
+  opacity: 0;
+}
+@keyframes heartFloat {
+  0% { transform: translateY(0) scale(0) rotate(0deg); opacity: 1; }
+  50% { opacity: 1; }
+  100% { transform: translateY(-100vh) scale(1.5) rotate(360deg); opacity: 0; }
+}
+
+/* ========================================
+   LOADING SCREEN
+   ======================================== */
+#screen-loading {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  min-height: 100%; background: var(--bg-primary);
+}
+.heart-loader {
+  width: 50px; height: 50px; position: relative;
+  animation: heartBeat 1.2s ease-in-out infinite;
+}
+@keyframes heartBeat {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+.heart-loader::before, .heart-loader::after {
+  content: ''; position: absolute;
+  width: 25px; height: 40px; background: var(--accent-primary);
+  border-radius: 25px 25px 0 0; top: 0;
+  box-shadow: var(--glow-pink);
+}
+.heart-loader::before { left: 25px; transform: rotate(-45deg); transform-origin: bottom left; }
+.heart-loader::after { left: 0; transform: rotate(45deg); transform-origin: bottom right; }
+
+/* ========================================
+   RESPONSIVE & MISC
+   ======================================== */
+@media (min-width: 430px) {
+  .fab-btn { right: calc(50% - 215px + 20px); }
+}
+@media (max-width: 430px) {
+  .fab-btn { right: 20px; }
+}
+
+.empty-state {
+  text-align: center; padding: 40px 20px;
+}
+.empty-state-icon { font-size: 60px; margin-bottom: 16px; opacity: 0.6; }
+.empty-state-text { font-size: 15px; color: var(--text-muted); line-height: 1.6; }
+
+.mt-8 { margin-top: 8px; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.text-center { text-align: center; }
+.hidden { display: none !important; }
+
+/* Forgot password modal content */
+.modal-content-pad { padding: 0; }
+
+/* Profile toggle switch */
+.toggle-switch {
+  width: 44px; height: 24px; border-radius: 12px;
+  background: rgba(255,255,255,0.1); position: relative; cursor: pointer;
+  transition: background 0.3s; flex-shrink: 0;
+}
+.toggle-switch.on { background: var(--accent-primary); }
+.toggle-knob {
+  position: absolute; top: 2px; left: 2px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: white; transition: left 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+.toggle-switch.on .toggle-knob { left: 22px; }
+
+/* Connect partner prompt */
+.connect-prompt {
+  background: linear-gradient(135deg, rgba(255,45,111,0.1), rgba(168,85,247,0.08));
+  border: 1px dashed rgba(255,45,111,0.3); border-radius: 18px;
+  padding: 24px; text-align: center; margin-bottom: 20px; cursor: pointer;
+}
+.connect-prompt-icon { font-size: 40px; margin-bottom: 12px; }
+.connect-prompt-title { font-size: 16px; font-weight: 600; color: white; margin-bottom: 6px; }
+.connect-prompt-sub { font-size: 13px; color: var(--text-muted); }
+
+/* Input file hidden */
+#avatar-input, #avatar-input-profile { display: none; }
+</style>
+</head>
+<body>
+<canvas id="particles-canvas"></canvas>
+<div id="hearts-overlay"></div>
+<div id="toast-container"></div>
+
+<div id="app-wrapper">
+
+  <!-- ===================== LOADING SCREEN ===================== -->
+  <div class="screen active" id="screen-loading">
+    <div class="heart-loader"></div>
+    <p style="color:var(--text-muted);font-size:13px;margin-top:30px;letter-spacing:2px;">KRISHA</p>
+  </div>
+
+  <!-- ===================== SPLASH SCREEN ===================== -->
+  <div class="screen" id="screen-splash">
+    <div class="splash-logo-container">
+      <img src="logo.png" 
+        alt="Krisha Logo" class="splash-logo-img"
+        onerror="this.style.display='none';document.getElementById('splash-logo-fallback').style.display='flex'">
+      <div id="splash-logo-fallback" style="display:none;width:100px;height:100px;border-radius:24px;background:#0d0d1a;border:2px solid rgba(255,45,111,0.3);align-items:center;justify-content:center;flex-direction:column;gap:4px;">
+        <div style="width:10px;height:10px;border-radius:50%;background:#ff2d6f;box-shadow:0 0 12px #ff2d6f;"></div>
+        <div style="width:6px;height:6px;border-radius:50%;background:#ff6b9d;box-shadow:0 0 10px #ff6b9d;margin-left:20px;margin-top:8px;"></div>
+      </div>
+      <div class="sparkle-orbit">
+        <div class="sparkle-dot s1"></div>
+        <div class="sparkle-dot s2"></div>
+      </div>
+    </div>
+    <h1 class="krisha-title">Krisha</h1>
+    <p class="splash-tagline">Love knows no distance 💕</p>
+    <button class="btn-primary" onclick="showScreen('register')">Get Started</button>
+    <p class="link-text" onclick="showScreen('login')">Already have an account? <span>Sign In</span></p>
+  </div>
+
+  <!-- ===================== REGISTER SCREEN ===================== -->
+  <div class="screen" id="screen-register">
+    <div class="auth-screen">
+      <div class="auth-header">
+        <img src="logo.png" 
+          alt="Krisha" class="auth-logo-small"
+          onerror="this.style.display='none'">
+        <div class="auth-title">Create Account</div>
+        <div class="auth-subtitle">Join Krisha and stay close to your love 💕</div>
+      </div>
+
+      <input type="file" id="avatar-input" accept="image/*" onchange="handleAvatarUpload(this, 'reg-avatar')">
+      <div class="avatar-upload" onclick="document.getElementById('avatar-input').click()">
+        <div class="avatar-circle" id="reg-avatar-circle">
+          <span id="reg-avatar-emoji">📸</span>
+          <img id="reg-avatar" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;border-radius:50%;">
+        </div>
+        <span class="avatar-label">Tap to add photo</span>
+      </div>
+
+      <form class="glass-card" onsubmit="event.preventDefault();handleRegister();">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <div class="input-wrapper">
+            <i class="fas fa-user input-icon"></i>
+            <input type="text" class="form-input" id="reg-name" placeholder="Your full name">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <div class="input-wrapper">
+            <i class="fas fa-envelope input-icon"></i>
+            <input type="email" class="form-input" id="reg-email" placeholder="you@example.com">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="input-wrapper">
+            <i class="fas fa-lock input-icon"></i>
+            <input type="password" class="form-input" id="reg-password" placeholder="Create a password">
+            <i class="fas fa-eye input-toggle" onclick="togglePassword('reg-password', this)"></i>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm Password</label>
+          <div class="input-wrapper">
+            <i class="fas fa-lock input-icon"></i>
+            <input type="password" class="form-input" id="reg-confirm" placeholder="Confirm password">
+            <i class="fas fa-eye input-toggle" onclick="togglePassword('reg-confirm', this)"></i>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Partner's Email <span style="color:var(--text-muted);font-size:10px;">(optional)</span></label>
+          <div class="input-wrapper">
+            <i class="fas fa-heart input-icon" style="color:var(--accent-primary)"></i>
+            <input type="email" class="form-input" id="reg-partner-email" placeholder="partner@example.com">
+          </div>
+        </div>
+
+        <div class="checkbox-row">
+          <div class="checkbox-custom" id="terms-cb" onclick="this.classList.toggle('checked')"></div>
+          <p class="checkbox-text">I agree to the <span>Terms of Service</span> and <span>Privacy Policy</span></p>
+        </div>
+
+        <button class="btn-primary" type="submit">
+          <i class="fas fa-heart" style="margin-right:8px;"></i> Create Account
+        </button>
+      </form>
+
+      <p class="link-text text-center mt-16" onclick="showScreen('login')">
+        Already have an account? <span>Sign In</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- ===================== LOGIN SCREEN ===================== -->
+  <div class="screen" id="screen-login">
+    <div class="auth-screen">
+      <div class="auth-header">
+        <img src="logo.png" 
+          alt="Krisha" class="auth-logo-small"
+          onerror="this.style.display='none'">
+        <div class="auth-title">Welcome Back 💕</div>
+        <div class="auth-subtitle">Sign in to reconnect with your love</div>
+      </div>
+
+      <form class="glass-card" onsubmit="event.preventDefault();handleLogin();">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <div class="input-wrapper">
+            <i class="fas fa-envelope input-icon"></i>
+            <input type="email" class="form-input" id="login-email" placeholder="you@example.com" autocomplete="email">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="input-wrapper">
+            <i class="fas fa-lock input-icon"></i>
+            <input type="password" class="form-input" id="login-password" placeholder="Your password" autocomplete="current-password">
+            <i class="fas fa-eye input-toggle" onclick="togglePassword('login-password', this)"></i>
+          </div>
+        </div>
+        <div class="forgot-link" onclick="showForgotModal()">Forgot Password?</div>
+
+        <button class="btn-primary" type="submit">
+          <i class="fas fa-sign-in-alt" style="margin-right:8px;"></i> Sign In
+        </button>
+
+        <div class="divider">
+          <div class="divider-line"></div>
+          <span class="divider-text">— OR LOGIN WITH —</span>
+          <div class="divider-line"></div>
+        </div>
+
+        <div class="biometric-row">
+          <button class="biometric-btn" onclick="handleFingerprint()">
+            <div class="biometric-icon fingerprint-glow">
+              <i class="fas fa-fingerprint" style="font-size:36px;color:var(--accent-primary);"></i>
+            </div>
+            <span class="biometric-label">Touch ID</span>
+          </button>
+          <button class="biometric-btn" onclick="handleFaceID()">
+            <div class="biometric-icon face-scan-container" id="face-icon-container">
+              <i class="fas fa-face-smile" style="font-size:34px;color:var(--accent-secondary);"></i>
+              <div class="face-scan-line" id="face-scan-line"></div>
+            </div>
+            <span class="biometric-label">Face ID</span>
+          </button>
+        </div>
+
+        <div style="background:rgba(255,45,111,0.06);border:1px solid rgba(255,45,111,0.15);border-radius:12px;padding:12px;margin-top:12px;text-align:center;">
+          <p style="font-size:11px;color:var(--text-muted);line-height:1.6;">
+            <b style="color:var(--accent-secondary);">Demo Accounts:</b><br>
+            user1@test.com / pass123<br>
+            user2@test.com / pass123
+          </p>
+          <div style="margin-top:8px;display:flex;gap:8px;justify-content:center;">
+            <button type="button" onclick="quickLogin('user1@test.com')" style="padding:5px 14px;border-radius:20px;border:1px solid rgba(255,45,111,0.4);background:rgba(255,45,111,0.1);color:var(--accent-secondary);font-size:11px;cursor:pointer;font-family:Poppins,sans-serif;font-weight:600;">Login as Alex</button>
+            <button type="button" onclick="quickLogin('user2@test.com')" style="padding:5px 14px;border-radius:20px;border:1px solid rgba(255,107,157,0.4);background:rgba(255,107,157,0.1);color:var(--accent-soft);font-size:11px;cursor:pointer;font-family:Poppins,sans-serif;font-weight:600;">Login as Jordan</button>
+          </div>
+        </div>
+      </form>
+
+      <p class="link-text text-center mt-16" onclick="showScreen('register')">
+        New here? <span>Create Account</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- ===================== HOME SCREEN ===================== -->
+  <div class="screen" id="screen-home">
+    <!-- Top Bar -->
+    <div class="home-topbar">
+      <div class="topbar-logo">Krisha</div>
+      <div class="topbar-right">
+        <div class="notif-btn" onclick="toggleNotifPanel()">
+          <i class="fas fa-bell"></i>
+          <div class="notif-badge hidden" id="notif-badge">0</div>
+        </div>
+        <div class="user-avatar-small" id="home-avatar" onclick="showMainScreen('profile')">
+          <span id="home-avatar-emoji">😊</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="home-content">
+      <!-- Partner Card -->
+      <div class="partner-card" id="partner-card">
+        <div style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;font-weight:600;">
+          💑 Your Partner
+        </div>
+        <!-- No partner connected -->
+        <div id="no-partner-msg" class="connect-prompt" onclick="showConnectPartnerModal()">
+          <div class="connect-prompt-icon">💌</div>
+          <div class="connect-prompt-title" id="connect-prompt-title">Connect with your partner</div>
+          <div class="connect-prompt-sub" id="connect-prompt-sub">Tap to link your account with your partner's email</div>
+        </div>
+        <!-- Partner connected view -->
+        <div id="partner-connected-view" style="display:none;">
+          <div class="partner-card-header">
+            <div class="partner-avatar" id="partner-avatar-home">😊</div>
+            <div class="partner-info">
+              <div class="partner-name" id="partner-name-display">Partner</div>
+              <div class="partner-status">
+                <div class="status-dot"></div>
+                <span>Connected 💚</span>
+              </div>
+            </div>
+          </div>
+          <div class="partner-mood-display">
+            <div class="partner-mood-emoji" id="partner-mood-emoji">😊</div>
+            <div class="partner-mood-info">
+              <div class="partner-mood-label">Partner's Mood</div>
+              <div class="partner-mood-text" id="partner-mood-text">Happy</div>
+              <div class="partner-mood-time" id="partner-mood-time">Just now</div>
+            </div>
+          </div>
+          <div class="miss-love-row" style="margin-top:12px;">
+            <div class="counter-pill">💌 Missed <span class="count" id="miss-count">0</span>x today</div>
+            <div class="counter-pill">❤️ Loves sent <span class="count" id="love-count">0</span>x</div>
+          </div>
+          <div class="partner-message-box" id="partner-message-box">
+            <div class="partner-message-label">Latest love message</div>
+            <div class="partner-message-text" id="partner-message-text">No message yet. Tap I Miss You or I Love You ❤️</div>
+            <div class="partner-message-time" id="partner-message-time-text"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Your Mood -->
+      <div class="section-title"><span class="emoji">✨</span> How are you feeling?</div>
+      <div class="mood-grid" id="mood-grid">
+        <div class="mood-btn" onclick="selectMood('Happy','😊')" data-mood="Happy">
+          <span class="mood-emoji">😊</span><span class="mood-name">Happy</span>
+        </div>
+        <div class="mood-btn" onclick="selectMood('Sad','😢')" data-mood="Sad">
+          <span class="mood-emoji">😢</span><span class="mood-name">Sad</span>
+        </div>
+        <div class="mood-btn" onclick="selectMood('In Love','😍')" data-mood="In Love">
+          <span class="mood-emoji">😍</span><span class="mood-name">In Love</span>
+        </div>
+        <div class="mood-btn" onclick="selectMood('Angry','😤')" data-mood="Angry">
+          <span class="mood-emoji">😤</span><span class="mood-name">Angry</span>
+        </div>
+        <div class="mood-btn" onclick="selectMood('Sleepy','😴')" data-mood="Sleepy">
+          <span class="mood-emoji">😴</span><span class="mood-name">Sleepy</span>
+        </div>
+        <div class="mood-btn" onclick="selectMood('Missing You','🥰')" data-mood="Missing You">
+          <span class="mood-emoji">🥰</span><span class="mood-name">Missing You</span>
+        </div>
+        <div class="mood-btn" onclick="selectMood('Peaceful','😌')" data-mood="Peaceful">
+          <span class="mood-emoji">😌</span><span class="mood-name">Peaceful</span>
+        </div>
+        <div class="mood-btn" onclick="selectMood('Excited','🥳')" data-mood="Excited">
+          <span class="mood-emoji">🥳</span><span class="mood-name">Excited</span>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="section-title"><span class="emoji">⚡</span> Quick Actions</div>
+      <div class="action-grid">
+        <div class="action-card action-miss" onclick="sendMissYou()">
+          <div class="action-icon">💌</div>
+          <div class="action-label" style="color:#ff6b9d;">I Miss You</div>
+          <div class="action-sub">Send a heartfelt ping</div>
+        </div>
+        <div class="action-card action-love" onclick="sendLoveYou()">
+          <div class="action-icon">❤️</div>
+          <div class="action-label" style="color:#ff2d6f;">I Love You</div>
+          <div class="action-sub">Shower with love</div>
+        </div>
+        <div class="action-card action-secret" onclick="openSecretModal()">
+          <div class="action-icon">🔐</div>
+          <div class="action-label" style="color:#a855f7;">Share Secret</div>
+          <div class="action-sub">For your eyes only</div>
+        </div>
+        <div class="action-card action-emergency" onclick="openEmergencyModal()">
+          <div class="action-icon">🆘</div>
+          <div class="action-label" style="color:#ef4444;">Emergency</div>
+          <div class="action-sub">Alert your partner</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <div class="bottom-nav">
+      <div class="nav-item active" onclick="showMainScreen('home')" id="nav-home">
+        <i class="fas fa-home"></i>
+        <span class="nav-label">Home</span>
+      </div>
+      <div class="nav-item" onclick="showMainScreen('secrets')" id="nav-secrets">
+        <i class="fas fa-lock"></i>
+        <span class="nav-label">Secrets</span>
+      </div>
+      <div class="nav-item" onclick="showMainScreen('mood')" id="nav-mood">
+        <i class="fas fa-heart"></i>
+        <span class="nav-label">Mood</span>
+      </div>
+      <div class="nav-item" onclick="showMainScreen('profile')" id="nav-profile">
+        <i class="fas fa-user"></i>
+        <span class="nav-label">Profile</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== SECRETS SCREEN ===================== -->
+  <div class="screen" id="screen-secrets-main">
+    <div class="screen-header">
+      <div class="screen-header-title">Our Secrets 🔐</div>
+      <div class="screen-header-sub">Tap a secret to reveal it</div>
+    </div>
+    <div class="secrets-list" id="secrets-list">
+      <!-- Secrets populated by JS -->
+    </div>
+    <!-- Bottom Nav copy -->
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="showMainScreen('home')" id="nav-home-s">
+        <i class="fas fa-home"></i><span class="nav-label">Home</span>
+      </div>
+      <div class="nav-item active" onclick="showMainScreen('secrets')" id="nav-secrets-s">
+        <i class="fas fa-lock"></i><span class="nav-label">Secrets</span>
+      </div>
+      <div class="nav-item" onclick="showMainScreen('mood')" id="nav-mood-s">
+        <i class="fas fa-heart"></i><span class="nav-label">Mood</span>
+      </div>
+      <div class="nav-item" onclick="showMainScreen('profile')" id="nav-profile-s">
+        <i class="fas fa-user"></i><span class="nav-label">Profile</span>
+      </div>
+    </div>
+  </div>
+  <button class="fab-btn" id="fab-secret" onclick="openSecretModal()" style="display:none;">
+    <i class="fas fa-plus"></i>
+  </button>
+
+  <!-- ===================== MOOD SCREEN ===================== -->
+  <div class="screen" id="screen-mood-main">
+    <div class="screen-header">
+      <div class="screen-header-title">Mood Journey 💫</div>
+      <div class="screen-header-sub">Track your emotional connection</div>
+    </div>
+    <div style="padding:20px 20px 0;">
+      <!-- Your Mood -->
+      <div class="glass-card" style="margin-bottom:16px;text-align:center;">
+        <div style="font-size:13px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Your Mood Today</div>
+        <div class="mood-aura" id="your-mood-aura">😊</div>
+        <div style="font-size:20px;font-weight:700;color:white;" id="your-mood-label">Happy</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;" id="your-mood-updated">Updated just now</div>
+      </div>
+      <!-- Partner Mood -->
+      <div class="glass-card" style="margin-bottom:16px;text-align:center;">
+        <div style="font-size:13px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Partner's Mood</div>
+        <div style="font-size:60px;margin:10px 0;" id="partner-mood-big">💕</div>
+        <div style="font-size:20px;font-weight:700;color:var(--text-soft);" id="partner-mood-big-label">Waiting...</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Synced in real-time</div>
+      </div>
+      <!-- Mood History -->
+      <div class="glass-card" style="margin-bottom:16px;">
+        <div class="section-title" style="margin-bottom:16px;"><span class="emoji">📅</span> This Week</div>
+        <div class="mood-history-row" id="mood-history-row">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+      <!-- Stats -->
+      <div class="glass-card" style="margin-bottom:100px;">
+        <div class="section-title" style="margin-bottom:12px;"><span class="emoji">📊</span> Mood Stats</div>
+        <div id="mood-stats" style="font-size:14px;color:var(--text-soft);line-height:1.8;">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="showMainScreen('home')"><i class="fas fa-home"></i><span class="nav-label">Home</span></div>
+      <div class="nav-item" onclick="showMainScreen('secrets')"><i class="fas fa-lock"></i><span class="nav-label">Secrets</span></div>
+      <div class="nav-item active" onclick="showMainScreen('mood')"><i class="fas fa-heart"></i><span class="nav-label">Mood</span></div>
+      <div class="nav-item" onclick="showMainScreen('profile')"><i class="fas fa-user"></i><span class="nav-label">Profile</span></div>
+    </div>
+  </div>
+
+  <!-- ===================== PROFILE SCREEN ===================== -->
+  <div class="screen" id="screen-profile-main">
+    <div class="profile-hero">
+      <input type="file" id="avatar-input-profile" accept="image/*" onchange="handleAvatarUpload(this,'profile-avatar-img')">
+      <div class="profile-avatar-large" onclick="document.getElementById('avatar-input-profile').click()">
+        <span id="profile-avatar-emoji" style="position:absolute;">😊</span>
+        <img id="profile-avatar-img" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;border-radius:50%;">
+        <div style="position:absolute;bottom:0;right:0;width:26px;height:26px;background:var(--accent-primary);border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg-primary);">
+          <i class="fas fa-camera" style="font-size:11px;color:white;"></i>
+        </div>
+      </div>
+      <div class="profile-name" id="profile-name-display">Loading...</div>
+      <div class="profile-email" id="profile-email-display">loading@...</div>
+    </div>
+
+    <div style="padding:0 20px 20px;">
+      <!-- Partner Connected -->
+      <div class="partner-connected-card" id="profile-partner-card" onclick="showConnectPartnerModal()">
+        <div class="connected-heart-icon">💑</div>
+        <div class="connected-info">
+          <div class="connected-label">Connected with</div>
+          <div class="connected-name" id="profile-partner-name">Tap to connect</div>
+          <div class="connected-since" id="profile-partner-email">Find your partner →</div>
+        </div>
+      </div>
+
+      <!-- Settings -->
+      <div class="profile-section">
+        <div class="profile-section-title">Account</div>
+        <div class="menu-item" onclick="showToast('🔑 Change password coming soon','info')">
+          <div class="menu-item-icon icon-pink"><i class="fas fa-key"></i></div>
+          <div class="menu-item-text"><div class="menu-item-label">Change Password</div><div class="menu-item-sub">Update your security</div></div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
+        </div>
+        <div class="menu-item" onclick="toggleNotifications()">
+          <div class="menu-item-icon icon-purple"><i class="fas fa-bell"></i></div>
+          <div class="menu-item-text"><div class="menu-item-label">Notifications</div><div class="menu-item-sub" id="notif-status-text">Enabled</div></div>
+          <div class="toggle-switch on" id="notif-toggle"><div class="toggle-knob"></div></div>
+        </div>
+        <div class="menu-item" onclick="showToast('🔒 Privacy settings coming soon','info')">
+          <div class="menu-item-icon icon-blue"><i class="fas fa-shield-alt"></i></div>
+          <div class="menu-item-text"><div class="menu-item-label">Privacy</div><div class="menu-item-sub">Control your data</div></div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
+        </div>
+        <div class="menu-item" onclick="showToast('💬 Help & support coming soon','info')">
+          <div class="menu-item-icon icon-green"><i class="fas fa-question-circle"></i></div>
+          <div class="menu-item-text"><div class="menu-item-label">Help & Support</div><div class="menu-item-sub">Get assistance</div></div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
+        </div>
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-section-title">Partner</div>
+        <div class="menu-item" onclick="disconnectPartner()">
+          <div class="menu-item-icon icon-orange"><i class="fas fa-unlink"></i></div>
+          <div class="menu-item-text"><div class="menu-item-label">Disconnect Partner</div><div class="menu-item-sub">Remove partner link</div></div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
+        </div>
+      </div>
+
+      <div style="padding:0 0 16px;">
+        <button class="btn-danger" onclick="handleSignOut()">
+          <i class="fas fa-sign-out-alt" style="margin-right:8px;"></i> Sign Out
+        </button>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="showMainScreen('home')"><i class="fas fa-home"></i><span class="nav-label">Home</span></div>
+      <div class="nav-item" onclick="showMainScreen('secrets')"><i class="fas fa-lock"></i><span class="nav-label">Secrets</span></div>
+      <div class="nav-item" onclick="showMainScreen('mood')"><i class="fas fa-heart"></i><span class="nav-label">Mood</span></div>
+      <div class="nav-item active" onclick="showMainScreen('profile')"><i class="fas fa-user"></i><span class="nav-label">Profile</span></div>
+    </div>
+  </div>
+
+  <!-- ===================== NOTIFICATION PANEL ===================== -->
+  <div class="notif-panel" id="notif-panel">
+    <div class="notif-panel-header">
+      <h2 style="font-size:18px;font-weight:700;">Notifications 🔔</h2>
+      <div onclick="toggleNotifPanel()" style="cursor:pointer;padding:8px;color:var(--text-muted);">
+        <i class="fas fa-times" style="font-size:18px;"></i>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
+      <span onclick="clearAllNotifications()" style="font-size:12px;color:var(--accent-secondary);cursor:pointer;font-weight:500;">Clear all</span>
+    </div>
+    <div id="notif-list">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
+</div><!-- end app-wrapper -->
+
+<!-- ===================== MODALS ===================== -->
+
+<!-- Secret Modal -->
+<div class="modal-overlay" id="secret-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🔐 Share a Secret</div>
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">Choose a category:</div>
+    <div class="secret-categories">
+      <button class="cat-btn cat-romantic selected" onclick="selectCategory('romantic',this)" data-cat="romantic">💕 Romantic</button>
+      <button class="cat-btn cat-funny" onclick="selectCategory('funny',this)" data-cat="funny">😄 Funny</button>
+      <button class="cat-btn cat-dream" onclick="selectCategory('dream',this)" data-cat="dream">🌟 Dream</button>
+      <button class="cat-btn cat-wish" onclick="selectCategory('wish',this)" data-cat="wish">🙏 Wish</button>
+      <button class="cat-btn cat-thought" onclick="selectCategory('thought',this)" data-cat="thought">💭 Thought</button>
+    </div>
+    <textarea class="form-textarea" id="secret-text-input" placeholder="Write your secret here... 🤫" maxlength="500"></textarea>
+    <div style="text-align:right;font-size:11px;color:var(--text-muted);margin-top:4px;margin-bottom:12px;">
+      <span id="secret-char-count">0</span>/500
+    </div>
+    <button class="btn-primary" onclick="submitSecret()" id="send-secret-btn">
+      <i class="fas fa-paper-plane" style="margin-right:8px;"></i> Send to <span id="partner-name-in-modal">Partner</span>
+    </button>
+    <button class="btn-outline mt-8" onclick="closeModal('secret-modal')">Cancel</button>
+  </div>
+</div>
+
+<!-- Emergency Modal -->
+<div class="modal-overlay" id="emergency-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="emergency-icon-big">🆘</div>
+    <div class="modal-title" style="text-align:center;color:#ef4444;">Emergency Alert!</div>
+    <p style="font-size:13px;color:var(--text-muted);text-align:center;margin-bottom:20px;">
+      This will immediately alert your partner and notify them you need help.
+    </p>
+    <div class="emergency-actions">
+      <button class="emergency-btn emergency-call" onclick="emergencyCall()">
+        <i class="fas fa-phone"></i> Call Partner Now
+      </button>
+      <button class="emergency-btn emergency-sos" onclick="sendSOSMessage()">
+        <i class="fas fa-exclamation-triangle"></i> Send SOS Alert
+      </button>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px;">
+        <button class="emergency-btn" style="background:rgba(255,255,255,0.05);color:var(--text-soft);border:1px solid rgba(255,255,255,0.1);" onclick="sendSOSMessage('I need help, please contact me immediately!')">
+          "I need help urgently!"
+        </button>
+        <button class="emergency-btn" style="background:rgba(255,255,255,0.05);color:var(--text-soft);border:1px solid rgba(255,255,255,0.1);" onclick="sendSOSMessage('Are you okay? Please check in!')">
+          "Please check in with me"
+        </button>
+        <button class="emergency-btn" style="background:rgba(255,255,255,0.05);color:var(--text-soft);border:1px solid rgba(255,255,255,0.1);" onclick="sendSOSMessage('I am safe. Just wanted to let you know.')">
+          "I am safe, just checking in"
+        </button>
+      </div>
+      <button class="emergency-btn emergency-ok" onclick="closeModal('emergency-modal')">
+        <i class="fas fa-times"></i> Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Connect Partner Modal -->
+<div class="modal-overlay" id="connect-partner-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">💑 Connect with Partner</div>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Enter your partner's email to connect your accounts. This demo uses local storage, so cross-phone live sync needs a cloud backend.</p>
+    <div class="form-group">
+      <label class="form-label">Partner's Email</label>
+      <div class="input-wrapper">
+        <i class="fas fa-heart input-icon" style="color:var(--accent-primary)"></i>
+        <input type="email" class="form-input" id="connect-partner-email" placeholder="partner@example.com">
+      </div>
+    </div>
+    <button class="btn-primary mt-8" onclick="connectPartner()">
+      <i class="fas fa-link" style="margin-right:8px;"></i> Connect
+    </button>
+    <button class="btn-outline mt-8" onclick="closeModal('connect-partner-modal')">Cancel</button>
+  </div>
+</div>
+
+<!-- Forgot Password Modal -->
+<div class="modal-overlay" id="forgot-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🔑 Reset Password</div>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Enter your email to receive a reset link.</p>
+    <div class="form-group">
+      <div class="input-wrapper">
+        <i class="fas fa-envelope input-icon"></i>
+        <input type="email" class="form-input" id="forgot-email" placeholder="your@email.com">
+      </div>
+    </div>
+    <button class="btn-primary mt-8" onclick="handleForgotPassword()">
+      <i class="fas fa-paper-plane" style="margin-right:8px;"></i> Send Reset Link
+    </button>
+    <button class="btn-outline mt-8" onclick="closeModal('forgot-modal')">Cancel</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+//   KRISHA APP - JAVASCRIPT ENGINE
+// ============================================================
+
+let cloudApplyingRemote = false;
+
+// ---- DATABASE (localStorage) ----
+const DB = {
+  get(key) {
+    try { return JSON.parse(localStorage.getItem('krisha_' + key)) || null; }
+    catch { return null; }
+  },
+  set(key, val) { localStorage.setItem('krisha_' + key, JSON.stringify(val)); },
+  getUsers() { return this.get('users') || {}; },
+  getSecrets() { return this.get('secrets') || []; },
+  getNotifications() { return this.get('notifications') || []; },
+  getCurrentUser() { return this.get('currentUser'); },
+
+  saveUser(user) {
+    const users = this.getUsers();
+    users[user.email] = user;
+    this.set('users', users);
+    if (!cloudApplyingRemote) CloudSync.syncUser(user);
+  },
+  addSecret(secret) {
+    const secrets = this.getSecrets();
+    secrets.unshift(secret);
+    this.set('secrets', secrets);
+    if (!cloudApplyingRemote) CloudSync.syncSecret(secret);
+    return secret;
+  },
+  addNotification(notif) {
+    const notifs = this.getNotifications();
+    notifs.unshift(notif);
+    this.set('notifications', notifs);
+    if (!cloudApplyingRemote) CloudSync.syncNotification(notif);
+  },
+  updateUserMood(email, mood, emoji) {
+    const users = this.getUsers();
+    if (users[email]) {
+      users[email].mood = mood;
+      users[email].moodEmoji = emoji;
+      users[email].moodUpdated = new Date().toISOString();
+      // Add to mood history
+      const day = new Date().toLocaleDateString('en', {weekday:'short'});
+      users[email].moodHistory = users[email].moodHistory || [];
+      users[email].moodHistory.unshift({ mood, emoji, day, time: new Date().toISOString() });
+      if (users[email].moodHistory.length > 7) users[email].moodHistory = users[email].moodHistory.slice(0, 7);
+      this.set('users', users);
+      if (!cloudApplyingRemote) CloudSync.syncUser(users[email]);
+    }
+  }
+};
+
+function emailDocId(email) {
+  return encodeURIComponent((email || '').toLowerCase());
+}
+
+function mergeById(localList, remoteList) {
+  const map = new Map();
+  (localList || []).forEach(item => {
+    if (item && item.id) map.set(item.id, item);
+  });
+  (remoteList || []).forEach(item => {
+    if (item && item.id) map.set(item.id, item);
+  });
+  return Array.from(map.values()).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+}
+
+const CloudSync = {
+  enabled: false,
+  baseUrl: '',
+  dataSource: '',
+  database: '',
+  apiKey: '',
+  collections: {
+    users: 'users',
+    secrets: 'secrets',
+    notifications: 'notifications'
+  },
+  pollTimer: null,
+  syncing: false,
+
+  hasConfig(cfg) {
+    return !!(cfg && cfg.baseUrl && cfg.apiKey && cfg.dataSource && cfg.database);
+  },
+
+  getConfig() {
+    const inlineCfg = window.KRISHA_MONGO_CONFIG || null;
+    if (this.hasConfig(inlineCfg)) return inlineCfg;
+
+    try {
+      const raw = localStorage.getItem('krisha_mongo_config');
+      const parsed = raw ? JSON.parse(raw) : null;
+      if (this.hasConfig(parsed)) return parsed;
+    } catch {}
+
+    return null;
+  },
+
+  init() {
+    if (this.enabled) return true;
+
+    const cfg = this.getConfig();
+    if (!cfg) return false;
+
+    try {
+      this.baseUrl = String(cfg.baseUrl).replace(/\/$/, '');
+      this.dataSource = cfg.dataSource;
+      this.database = cfg.database;
+      this.apiKey = cfg.apiKey;
+      if (cfg.collections && typeof cfg.collections === 'object') {
+        this.collections = {
+          users: cfg.collections.users || this.collections.users,
+          secrets: cfg.collections.secrets || this.collections.secrets,
+          notifications: cfg.collections.notifications || this.collections.notifications
+        };
+      }
+      this.enabled = true;
+      return true;
+    } catch (err) {
+      console.warn('Cloud sync init failed:', err);
+      this.enabled = false;
+      return false;
+    }
+  },
+
+  async request(action, payload) {
+    if (!this.enabled) return null;
+    const url = `${this.baseUrl}/action/${action}`;
+    const body = {
+      dataSource: this.dataSource,
+      database: this.database,
+      ...payload
+    };
+
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'api-key': this.apiKey
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (!res.ok) {
+      throw new Error(`Mongo Data API ${action} failed (${res.status})`);
+    }
+
+    return res.json();
+  },
+
+  syncUser(user) {
+    if (!this.enabled || !user?.email) return;
+    this.request('updateOne', {
+      collection: this.collections.users,
+      filter: { _id: emailDocId(user.email) },
+      update: {
+        $set: {
+          ...user,
+          _id: emailDocId(user.email),
+          updatedAt: Date.now()
+        }
+      },
+      upsert: true
+    })
+      .catch(err => console.warn('Cloud user sync failed:', err));
+  },
+
+  syncSecret(secret) {
+    if (!this.enabled || !secret?.id) return;
+    this.request('updateOne', {
+      collection: this.collections.secrets,
+      filter: { _id: String(secret.id) },
+      update: {
+        $set: {
+          ...secret,
+          _id: String(secret.id),
+          updatedAt: Date.now()
+        }
+      },
+      upsert: true
+    })
+      .catch(err => console.warn('Cloud secret sync failed:', err));
+  },
+
+  syncNotification(notif) {
+    if (!this.enabled || !notif?.id) return;
+    this.request('updateOne', {
+      collection: this.collections.notifications,
+      filter: { _id: String(notif.id) },
+      update: {
+        $set: {
+          ...notif,
+          _id: String(notif.id),
+          updatedAt: Date.now()
+        }
+      },
+      upsert: true
+    })
+      .catch(err => console.warn('Cloud notification sync failed:', err));
+  },
+
+  syncAllLocal() {
+    if (!this.enabled) return;
+    const users = DB.getUsers();
+    Object.values(users).forEach(user => this.syncUser(user));
+    DB.getSecrets().forEach(secret => this.syncSecret(secret));
+    DB.getNotifications().forEach(notif => this.syncNotification(notif));
+  },
+
+  async pullOnce() {
+    if (!this.enabled || this.syncing) return;
+    this.syncing = true;
+
+    try {
+      const [usersRes, secretsRes, notifsRes] = await Promise.all([
+        this.request('find', { collection: this.collections.users, filter: {} }),
+        this.request('find', { collection: this.collections.secrets, filter: {} }),
+        this.request('find', { collection: this.collections.notifications, filter: {} })
+      ]);
+
+      const remoteUsers = usersRes?.documents || [];
+      const localUsers = DB.getUsers();
+      remoteUsers.forEach(user => {
+        if (user?.email) localUsers[user.email] = user;
+      });
+
+      const remoteSecrets = (secretsRes?.documents || []).filter(s => s?.id);
+      const remoteNotifs = (notifsRes?.documents || []).filter(n => n?.id);
+
+      cloudApplyingRemote = true;
+      DB.set('users', localUsers);
+      DB.set('secrets', mergeById(DB.getSecrets(), remoteSecrets));
+      DB.set('notifications', mergeById(DB.getNotifications(), remoteNotifs));
+      cloudApplyingRemote = false;
+
+      if (currentUser?.email && localUsers[currentUser.email]) {
+        currentUser = localUsers[currentUser.email];
+      }
+
+      renderHomeScreen();
+      renderMoodScreen();
+      renderProfileScreen();
+      if (currentMainScreen === 'secrets') renderSecrets();
+      updateNotifBadge();
+      renderLatestLoveMessage();
+      notifyPhoneForUnreadNotifications();
+    } catch (err) {
+      console.warn('Cloud pull failed:', err);
+    } finally {
+      this.syncing = false;
+    }
+  },
+
+  startRealtime() {
+    if (!this.enabled || !currentUser?.email) return;
+    this.stopRealtime();
+    this.pullOnce();
+    this.pollTimer = setInterval(() => this.pullOnce(), 3000);
+  },
+
+  stopRealtime() {
+    if (this.pollTimer) clearInterval(this.pollTimer);
+    this.pollTimer = null;
+    this.syncing = false;
+  }
+};
+
+// ---- SEED DEMO ACCOUNTS ----
+function seedDemoAccounts() {
+  const users = DB.getUsers();
+  if (!users['user1@test.com']) {
+    DB.saveUser({
+      email: 'user1@test.com', password: 'pass123',
+      name: 'Alex Rivera', avatar: '', avatarEmoji: '😊',
+      partnerEmail: 'user2@test.com',
+      mood: 'Happy', moodEmoji: '😊',
+      moodUpdated: new Date().toISOString(),
+      moodHistory: [
+        {mood:'Happy',emoji:'😊',day:'Mon'},{mood:'In Love',emoji:'😍',day:'Tue'},
+        {mood:'Excited',emoji:'🥳',day:'Wed'},{mood:'Peaceful',emoji:'😌',day:'Thu'},
+        {mood:'Missing You',emoji:'🥰',day:'Fri'},{mood:'Happy',emoji:'😊',day:'Sat'},{mood:'In Love',emoji:'😍',day:'Sun'}
+      ],
+      missCount: 3, loveCount: 5, joinedAt: new Date().toISOString()
+    });
+  }
+  if (!users['user2@test.com']) {
+    DB.saveUser({
+      email: 'user2@test.com', password: 'pass123',
+      name: 'Jordan Lee', avatar: '', avatarEmoji: '🌸',
+      partnerEmail: 'user1@test.com',
+      mood: 'In Love', moodEmoji: '😍',
+      moodUpdated: new Date().toISOString(),
+      moodHistory: [
+        {mood:'In Love',emoji:'😍',day:'Mon'},{mood:'Happy',emoji:'😊',day:'Tue'},
+        {mood:'Missing You',emoji:'🥰',day:'Wed'},{mood:'Excited',emoji:'🥳',day:'Thu'},
+        {mood:'Peaceful',emoji:'😌',day:'Fri'},{mood:'In Love',emoji:'😍',day:'Sat'},{mood:'Happy',emoji:'😊',day:'Sun'}
+      ],
+      missCount: 2, loveCount: 4, joinedAt: new Date().toISOString()
+    });
+  }
+  // Seed some demo secrets
+  const secrets = DB.getSecrets();
+  if (secrets.length === 0) {
+    DB.addSecret({ id: 's1', fromUser: 'Alex Rivera', fromEmail: 'user1@test.com', toEmail: 'user2@test.com', text: 'I saved the first message you ever sent me. I re-read it every night before sleep. 💕', category: 'romantic', timestamp: Date.now() - 3600000, revealed: false });
+    DB.addSecret({ id: 's2', fromUser: 'Jordan Lee', fromEmail: 'user2@test.com', toEmail: 'user1@test.com', text: 'I talk to our stars every night and tell them to keep you safe until we meet again. 🌟', category: 'wish', timestamp: Date.now() - 7200000, revealed: false });
+    DB.addSecret({ id: 's3', fromUser: 'Alex Rivera', fromEmail: 'user1@test.com', toEmail: 'user2@test.com', text: 'I secretly practice our future conversations in the mirror... yes, all of them 😂', category: 'funny', timestamp: Date.now() - 86400000, revealed: false });
+  }
+}
+
+// ---- APP STATE ----
+let currentScreen = 'loading';
+let currentMainScreen = 'home';
+let currentUser = null;
+let selectedMood = null;
+let selectedCategory = 'romantic';
+let notifEnabled = true;
+let syncInterval = null;
+let nativeNotifReady = false;
+const shownNotifIds = new Set(DB.get('shownNotifIds') || []);
+
+// ---- SCREEN NAVIGATION ----
+function showScreen(screenName) {
+  const screens = document.querySelectorAll('.screen');
+  screens.forEach(s => {
+    s.classList.remove('active');
+  });
+  const target = document.getElementById('screen-' + screenName);
+  if (target) {
+    setTimeout(() => { target.classList.add('active'); }, 50);
+  }
+  currentScreen = screenName;
+  document.getElementById('fab-secret').style.display = (screenName === 'secrets-main') ? 'flex' : 'none';
+}
+
+function showMainScreen(name) {
+  currentMainScreen = name;
+  const mainScreens = ['home', 'secrets-main', 'mood-main', 'profile-main'];
+  mainScreens.forEach(s => {
+    const el = document.getElementById('screen-' + s);
+    if (el) { el.classList.remove('active'); el.classList.add('slide-out'); }
+  });
+  setTimeout(() => {
+    mainScreens.forEach(s => {
+      const el = document.getElementById('screen-' + s);
+      if (el) el.classList.remove('slide-out');
+    });
+    const target = document.getElementById('screen-' + name + '-main') || document.getElementById('screen-' + name);
+    if (target) target.classList.add('active');
+  }, 50);
+  document.getElementById('fab-secret').style.display = (name === 'secrets') ? 'flex' : 'none';
+  if (name === 'secrets') renderSecrets();
+  if (name === 'mood') renderMoodScreen();
+  if (name === 'profile') renderProfileScreen();
+}
+
+// ---- AUTH ----
+function handleRegister() {
+  const name = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim().toLowerCase();
+  const password = document.getElementById('reg-password').value;
+  const confirm = document.getElementById('reg-confirm').value;
+  const partnerEmail = document.getElementById('reg-partner-email').value.trim().toLowerCase();
+  const termsChecked = document.getElementById('terms-cb').classList.contains('checked');
+
+  if (!name) { showToast('⚠️ Please enter your name', 'warning'); return; }
+  if (!email || !email.includes('@')) { showToast('⚠️ Enter a valid email', 'warning'); return; }
+  if (password.length < 6) { showToast('⚠️ Password must be at least 6 characters', 'warning'); return; }
+  if (password !== confirm) { showToast('⚠️ Passwords do not match', 'warning'); return; }
+  if (!termsChecked) { showToast('⚠️ Please accept the terms', 'warning'); return; }
+
+  const users = DB.getUsers();
+  if (users[email]) { showToast('⚠️ Account already exists', 'warning'); return; }
+
+  const avatarImg = document.getElementById('reg-avatar');
+  const newUser = {
+    email, password, name,
+    avatar: avatarImg.src && avatarImg.style.display !== 'none' ? avatarImg.src : '',
+    avatarEmoji: '😊',
+    partnerEmail: partnerEmail || '',
+    mood: 'Happy', moodEmoji: '😊',
+    moodUpdated: new Date().toISOString(),
+    moodHistory: [], missCount: 0, loveCount: 0,
+    joinedAt: new Date().toISOString()
+  };
+  DB.saveUser(newUser);
+
+  // If partner email given, link them
+  if (partnerEmail && users[partnerEmail]) {
+    users[partnerEmail].partnerEmail = email;
+    DB.saveUser(users[partnerEmail]);
+    showToast('🎉 Account created & partner linked!', 'success');
+  } else {
+    showToast('🎉 Account created successfully!', 'success');
+  }
+  setTimeout(() => showScreen('login'), 1200);
+}
+
+function handleLogin() {
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
+  const password = document.getElementById('login-password').value;
+
+  if (!email || !password) { showToast('⚠️ Fill in all fields', 'warning'); return; }
+
+  const users = DB.getUsers();
+  const user = users[email];
+  if (!user || user.password !== password) { showToast('❌ Invalid email or password', 'error'); return; }
+
+  loginSuccess(user);
+}
+
+function loginSuccess(user) {
+  currentUser = user;
+  DB.set('currentUser', user.email);
+  CloudSync.init();
+  CloudSync.syncAllLocal();
+  CloudSync.startRealtime();
+  showToast('💕 Welcome back, ' + user.name.split(' ')[0] + '!', 'success');
+  setTimeout(() => {
+    showScreen('home');
+    renderHomeScreen();
+    startSync();
+  }, 600);
+}
+
+function handleFingerprint() {
+  if (window.PublicKeyCredential) {
+    showToast('👆 Touch ID scanning...', 'info');
+    setTimeout(() => {
+      const users = DB.getUsers();
+      const savedEmail = DB.getCurrentUser();
+      if (savedEmail && users[savedEmail]) {
+        loginSuccess(users[savedEmail]);
+      } else if (users['user1@test.com']) {
+        loginSuccess(users['user1@test.com']);
+      } else {
+        showToast('⚠️ No saved fingerprint. Login with email first.', 'warning');
+      }
+    }, 1500);
+  } else {
+    showToast('Touch ID scanning...', 'info');
+    setTimeout(() => {
+      const savedEmail = DB.getCurrentUser();
+      const users = DB.getUsers();
+      if (savedEmail && users[savedEmail]) {
+        loginSuccess(users[savedEmail]);
+      } else if (users['user1@test.com']) {
+        loginSuccess(users['user1@test.com']);
+      } else {
+        showToast('⚠️ No saved account found', 'warning');
+      }
+    }, 2000);
+  }
+}
+
+function handleFaceID() {
+  showToast('👀 Face ID scanning...', 'info');
+  const line = document.getElementById('face-scan-line');
+  if (line) line.style.animationDuration = '0.8s';
+  setTimeout(() => {
+    if (line) line.style.animationDuration = '2s';
+    const savedEmail = DB.getCurrentUser();
+    const users = DB.getUsers();
+    if (savedEmail && users[savedEmail]) {
+      loginSuccess(users[savedEmail]);
+    } else if (users['user1@test.com']) {
+      loginSuccess(users['user1@test.com']);
+    } else {
+      showToast('⚠️ No saved account found', 'warning');
+    }
+  }, 2500);
+}
+
+function quickLogin(email) {
+  const users = DB.getUsers();
+  if (users[email]) loginSuccess(users[email]);
+}
+
+function handleSignOut() {
+  stopSync();
+  CloudSync.stopRealtime();
+  currentUser = null;
+  DB.set('currentUser', null);
+  showToast('👋 Signed out successfully', 'info');
+  setTimeout(() => showScreen('splash'), 800);
+}
+
+function showForgotModal() { openModal('forgot-modal'); }
+function handleForgotPassword() {
+  const email = document.getElementById('forgot-email').value.trim();
+  if (!email) { showToast('⚠️ Enter your email', 'warning'); return; }
+  const users = DB.getUsers();
+  if (!users[email]) { showToast('⚠️ Email not found', 'warning'); return; }
+  closeModal('forgot-modal');
+  showToast('📧 Password reset link sent (demo mode)', 'success');
+}
+
+// ---- HOME SCREEN ----
+function renderHomeScreen() {
+  if (!currentUser) return;
+  const users = DB.getUsers();
+  const user = users[currentUser.email];
+  if (!user) return;
+  currentUser = user;
+
+  // Avatar
+  const avatarEl = document.getElementById('home-avatar');
+  const emojiEl = document.getElementById('home-avatar-emoji');
+  if (user.avatar) {
+    avatarEl.innerHTML = `<img src="${user.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+  } else {
+    emojiEl.textContent = user.avatarEmoji || '😊';
+  }
+
+  // Set current mood selection
+  if (user.mood) {
+    document.querySelectorAll('.mood-btn').forEach(b => {
+      b.classList.toggle('selected', b.dataset.mood === user.mood);
+    });
+    selectedMood = user.mood;
+  }
+
+  // Partner
+  const partnerEmail = user.partnerEmail;
+  if (partnerEmail && users[partnerEmail]) {
+    const partner = users[partnerEmail];
+    document.getElementById('no-partner-msg').style.display = 'none';
+    document.getElementById('partner-connected-view').style.display = 'block';
+    document.getElementById('partner-name-display').textContent = partner.name;
+    document.getElementById('partner-mood-emoji').textContent = partner.moodEmoji || '😊';
+    document.getElementById('partner-mood-text').textContent = partner.mood || 'Happy';
+    document.getElementById('partner-avatar-home').textContent = partner.avatarEmoji || '💕';
+    if (partner.avatar) {
+      document.getElementById('partner-avatar-home').innerHTML = `<img src="${partner.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    }
+    const pt = partner.moodUpdated ? timeAgo(partner.moodUpdated) : 'Recently';
+    document.getElementById('partner-mood-time').textContent = pt;
+    document.getElementById('miss-count').textContent = user.missCount || 0;
+    document.getElementById('love-count').textContent = user.loveCount || 0;
+    document.getElementById('partner-name-in-modal').textContent = partner.name.split(' ')[0];
+    setConnectPrompt('Connect with your partner', 'Tap to link your account with your partner\'s email');
+  } else {
+    document.getElementById('no-partner-msg').style.display = 'block';
+    document.getElementById('partner-connected-view').style.display = 'none';
+    if (partnerEmail) {
+      setConnectPrompt(
+        'Partner email saved',
+        `Waiting for ${partnerEmail} to be available in this app storage (demo mode)`
+      );
+    } else {
+      setConnectPrompt('Connect with your partner', 'Tap to link your account with your partner\'s email');
+    }
+  }
+
+  updateNotifBadge();
+  renderLatestLoveMessage();
+}
+
+function setConnectPrompt(title, subtitle) {
+  const titleEl = document.getElementById('connect-prompt-title');
+  const subtitleEl = document.getElementById('connect-prompt-sub');
+  if (titleEl) titleEl.textContent = title;
+  if (subtitleEl) subtitleEl.textContent = subtitle;
+}
+
+function renderLatestLoveMessage() {
+  if (!currentUser) return;
+  const msgTextEl = document.getElementById('partner-message-text');
+  const msgTimeEl = document.getElementById('partner-message-time-text');
+  if (!msgTextEl || !msgTimeEl) return;
+
+  const latest = DB.getNotifications().find(n =>
+    n.toEmail === currentUser.email && (n.type === 'miss' || n.type === 'love')
+  );
+
+  if (!latest) {
+    msgTextEl.textContent = 'No new I Miss You / I Love You messages yet 💕';
+    msgTimeEl.textContent = '';
+    return;
+  }
+
+  msgTextEl.textContent = latest.message;
+  msgTimeEl.textContent = timeAgo(latest.timestamp);
+}
+
+// ---- MOOD ----
+function selectMood(mood, emoji) {
+  if (!currentUser) return;
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelector(`[data-mood="${mood}"]`)?.classList.add('selected');
+  selectedMood = mood;
+
+  DB.updateUserMood(currentUser.email, mood, emoji);
+  const users = DB.getUsers();
+  currentUser = users[currentUser.email];
+
+  // Notify partner
+  const partner = getPartner();
+  if (partner) {
+    DB.addNotification({
+      id: 'n_' + Date.now(), toEmail: partner.email,
+      type: 'mood', icon: emoji,
+      message: `${currentUser.name.split(' ')[0]} is feeling ${mood} ${emoji}`,
+      timestamp: Date.now(), read: false
+    });
+    showToast(`${emoji} Mood updated! ${partner.name.split(' ')[0]} has been notified`, 'success');
+  } else {
+    showToast(`${emoji} Mood set to ${mood}!`, 'success');
+  }
+
+  // Ripple animation
+  const selectedBtn = document.querySelector(`[data-mood="${mood}"]`);
+  if (selectedBtn) {
+    selectedBtn.style.animation = 'moodRipple 0.5s ease';
+    setTimeout(() => selectedBtn.style.animation = '', 500);
+  }
+
+  renderMoodScreen();
+}
+
+// ---- ACTIONS ----
+function sendMissYou() {
+  if (!currentUser) return;
+  const partner = getPartner();
+  const users = DB.getUsers();
+  const user = users[currentUser.email];
+
+  user.missCount = (user.missCount || 0) + 1;
+  DB.saveUser(user);
+  currentUser = user;
+  document.getElementById('miss-count').textContent = user.missCount;
+
+  if (partner) {
+    const sender = currentUser.name.split(' ')[0];
+    DB.addNotification({
+      id: 'n_' + Date.now(), toEmail: partner.email,
+      type: 'miss', icon: '💌',
+      fromEmail: currentUser.email,
+      message: `${sender}: I miss you 💌`,
+      timestamp: Date.now(), read: false
+    });
+    showToast(`💌 Sent! ${partner.name.split(' ')[0]} knows you miss them!`, 'success');
+  } else {
+    showToast('💌 I Miss You sent!', 'success');
+  }
+  updateNotifBadge();
+  pulseAction();
+}
+
+function sendLoveYou() {
+  if (!currentUser) return;
+  const partner = getPartner();
+  const users = DB.getUsers();
+  const user = users[currentUser.email];
+
+  user.loveCount = (user.loveCount || 0) + 1;
+  DB.saveUser(user);
+  currentUser = user;
+  document.getElementById('love-count').textContent = user.loveCount;
+
+  launchHearts();
+
+  if (partner) {
+    const sender = currentUser.name.split(' ')[0];
+    DB.addNotification({
+      id: 'n_' + Date.now(), toEmail: partner.email,
+      type: 'love', icon: '❤️',
+      fromEmail: currentUser.email,
+      message: `${sender}: I love you ❤️`,
+      timestamp: Date.now(), read: false
+    });
+    showToast(`❤️ Love sent to ${partner.name.split(' ')[0]}! Hearts flying...`, 'success');
+  } else {
+    showToast('❤️ Sending love! 💕', 'success');
+  }
+  updateNotifBadge();
+}
+
+function openSecretModal() {
+  document.getElementById('secret-text-input').value = '';
+  document.getElementById('secret-char-count').textContent = '0';
+  const partner = getPartner();
+  if (partner) {
+    document.getElementById('partner-name-in-modal').textContent = partner.name.split(' ')[0];
+  }
+  openModal('secret-modal');
+}
+
+function submitSecret() {
+  if (!currentUser) return;
+  const text = document.getElementById('secret-text-input').value.trim();
+  if (!text) { showToast('⚠️ Write your secret first!', 'warning'); return; }
+
+  const partner = getPartner();
+  const secret = {
+    id: 's_' + Date.now(),
+    fromUser: currentUser.name,
+    fromEmail: currentUser.email,
+    toEmail: partner ? partner.email : '',
+    text, category: selectedCategory,
+    timestamp: Date.now(), revealed: false
+  };
+  DB.addSecret(secret);
+
+  if (partner) {
+    DB.addNotification({
+      id: 'n_' + Date.now(), toEmail: partner.email,
+      type: 'secret', icon: '🔐',
+      message: `${currentUser.name.split(' ')[0]} shared a new secret with you! 🔐`,
+      timestamp: Date.now(), read: false
+    });
+    showToast(`🔐 Secret synced! ${partner.name.split(' ')[0]} has been notified ✨`, 'success');
+  } else {
+    showToast('🔐 Secret saved!', 'success');
+  }
+
+  closeModal('secret-modal');
+  updateNotifBadge();
+  renderSecrets();
+}
+
+function openEmergencyModal() { openModal('emergency-modal'); }
+
+function emergencyCall() {
+  const partner = getPartner();
+  closeModal('emergency-modal');
+  if (partner) {
+    showToast(`📞 Calling ${partner.name}...`, 'error');
+    // In real app: window.location.href = 'tel:' + partner.phone;
+  } else {
+    showToast('📞 No partner connected', 'warning');
+  }
+}
+
+function sendSOSMessage(customMsg) {
+  const partner = getPartner();
+  const msg = customMsg || '🆘 EMERGENCY! I need help right now! Please contact me immediately!';
+
+  if (partner) {
+    DB.addNotification({
+      id: 'n_' + Date.now(), toEmail: partner.email,
+      type: 'emergency', icon: '🆘',
+      message: `🚨 EMERGENCY from ${currentUser.name.split(' ')[0]}: "${msg}"`,
+      timestamp: Date.now(), read: false
+    });
+    showToast(`🆘 SOS sent to ${partner.name.split(' ')[0]}!`, 'error');
+  } else {
+    showToast('🆘 SOS message sent!', 'error');
+  }
+  closeModal('emergency-modal');
+  updateNotifBadge();
+}
+
+// ---- SECRETS SCREEN ----
+function renderSecrets() {
+  const list = document.getElementById('secrets-list');
+  const secrets = DB.getSecrets();
+  const userEmail = currentUser ? currentUser.email : '';
+
+  const mySecrets = secrets.filter(s => s.fromEmail === userEmail || s.toEmail === userEmail || s.toEmail === '');
+
+  if (mySecrets.length === 0) {
+    list.innerHTML = `<div class="empty-state">
+      <div class="empty-state-icon">🔐</div>
+      <div class="empty-state-text">No secrets yet!<br>Add your first secret and<br>let your partner discover it 💕</div>
+    </div>`;
+    return;
+  }
+
+  const catLabels = { romantic:'💕 Romantic', funny:'😄 Funny', dream:'🌟 Dream', wish:'🙏 Wish', thought:'💭 Thought' };
+  const tagClasses = { romantic:'tag-romantic', funny:'tag-funny', dream:'tag-dream', wish:'tag-wish', thought:'tag-thought' };
+
+  list.innerHTML = mySecrets.map(s => `
+    <div class="secret-card ${s.category}" onclick="toggleRevealSecret('${s.id}')">
+      <div class="secret-card-header">
+        <span class="secret-tag ${tagClasses[s.category]}">${catLabels[s.category]}</span>
+        <span class="secret-time">${timeAgo(s.timestamp)}</span>
+      </div>
+      <div class="secret-text ${s.revealed ? '' : 'blurred'}" id="st-${s.id}">${escapeHtml(s.text)}</div>
+      <div class="secret-footer">
+        <span class="secret-sender">From: ${escapeHtml(s.fromUser)}</span>
+        <span class="secret-reveal-hint">${s.revealed ? '👁️ Revealed' : '👆 Tap to reveal'}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleRevealSecret(id) {
+  const secrets = DB.getSecrets();
+  const s = secrets.find(x => x.id === id);
+  if (s) {
+    s.revealed = !s.revealed;
+    DB.set('secrets', secrets);
+    renderSecrets();
+    if (s.revealed) {
+      // sparkle
+      showToast('✨ Secret revealed!', 'success');
+    }
+  }
+}
+
+// ---- MOOD SCREEN ----
+function renderMoodScreen() {
+  if (!currentUser) return;
+  const users = DB.getUsers();
+  const user = users[currentUser.email];
+  if (!user) return;
+
+  document.getElementById('your-mood-aura').textContent = user.moodEmoji || '😊';
+  document.getElementById('your-mood-label').textContent = user.mood || 'Happy';
+  const updated = user.moodUpdated ? timeAgo(user.moodUpdated) : 'Just now';
+  document.getElementById('your-mood-updated').textContent = 'Updated ' + updated;
+
+  // Partner mood
+  const partner = getPartner();
+  if (partner) {
+    document.getElementById('partner-mood-big').textContent = partner.moodEmoji || '💕';
+    document.getElementById('partner-mood-big-label').textContent = partner.mood || 'Waiting...';
+  }
+
+  // History
+  const history = user.moodHistory || [];
+  const historyRow = document.getElementById('mood-history-row');
+  if (history.length > 0) {
+    historyRow.innerHTML = history.slice(0, 7).map(h => `
+      <div class="mood-history-item">
+        <div class="mood-history-emoji">${h.emoji}</div>
+        <div class="mood-history-day">${h.day}</div>
+      </div>
+    `).join('');
+  } else {
+    historyRow.innerHTML = '<p style="font-size:13px;color:var(--text-muted);text-align:center;width:100%;">No mood history yet</p>';
+  }
+
+  // Stats
+  const stats = document.getElementById('mood-stats');
+  if (history.length > 0) {
+    const counts = {};
+    history.forEach(h => { counts[h.emoji + ' ' + h.mood] = (counts[h.emoji + ' ' + h.mood] || 0) + 1; });
+    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    const topMood = sorted[0];
+    stats.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,45,111,0.1);">
+        <span>Most frequent mood</span>
+        <span style="color:var(--accent-primary);font-weight:600;">${topMood ? topMood[0] : '–'}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,45,111,0.1);">
+        <span>Days tracked</span>
+        <span style="color:var(--accent-secondary);font-weight:600;">${history.length}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;">
+        <span>Miss you sent today</span>
+        <span style="color:#ff6b9d;font-weight:600;">${user.missCount || 0} times</span>
+      </div>
+    `;
+  } else {
+    stats.innerHTML = '<p style="font-size:13px;color:var(--text-muted);">Set your mood to start tracking 💕</p>';
+  }
+}
+
+// ---- PROFILE SCREEN ----
+function renderProfileScreen() {
+  if (!currentUser) return;
+  const users = DB.getUsers();
+  const user = users[currentUser.email];
+  if (!user) return;
+
+  document.getElementById('profile-name-display').textContent = user.name;
+  document.getElementById('profile-email-display').textContent = user.email;
+
+  const avatarImg = document.getElementById('profile-avatar-img');
+  const avatarEmoji = document.getElementById('profile-avatar-emoji');
+  if (user.avatar) {
+    avatarImg.src = user.avatar;
+    avatarImg.style.display = 'block';
+    avatarEmoji.style.display = 'none';
+  } else {
+    avatarEmoji.textContent = user.avatarEmoji || '😊';
+    avatarEmoji.style.display = 'block';
+    avatarImg.style.display = 'none';
+  }
+
+  const partner = getPartner();
+  if (partner) {
+    document.getElementById('profile-partner-name').textContent = partner.name;
+    document.getElementById('profile-partner-email').textContent = partner.email;
+    document.getElementById('profile-partner-card').style.background = 'linear-gradient(135deg, rgba(255,45,111,0.1), rgba(168,85,247,0.08))';
+  } else {
+    document.getElementById('profile-partner-name').textContent = 'Tap to connect';
+    document.getElementById('profile-partner-email').textContent = 'Find your partner →';
+  }
+}
+
+// ---- PARTNER CONNECT ----
+function showConnectPartnerModal() { openModal('connect-partner-modal'); }
+function connectPartner() {
+  const partnerEmail = document.getElementById('connect-partner-email').value.trim().toLowerCase();
+  if (!partnerEmail) { showToast('⚠️ Enter partner email', 'warning'); return; }
+  if (partnerEmail === currentUser.email) { showToast('⚠️ That\'s your own email!', 'warning'); return; }
+
+  const users = DB.getUsers();
+  users[currentUser.email].partnerEmail = partnerEmail;
+  const partnerExists = !!users[partnerEmail];
+  if (partnerExists) {
+    users[partnerEmail].partnerEmail = currentUser.email;
+  }
+  DB.set('users', users);
+  currentUser = users[currentUser.email];
+  DB.set('currentUser', currentUser.email);
+
+  if (partnerExists) {
+    DB.addNotification({
+      id: 'n_' + Date.now(), toEmail: partnerEmail,
+      type: 'connect', icon: '💑',
+      message: `${currentUser.name} connected with you on Krisha! 💕`,
+      timestamp: Date.now(), read: false
+    });
+  }
+
+  closeModal('connect-partner-modal');
+  if (partnerExists) {
+    showToast(`💑 Connected with ${users[partnerEmail].name}!`, 'success');
+  } else {
+    showToast('💌 Partner email saved. Real cross-phone sync needs cloud backend.', 'info');
+  }
+  renderHomeScreen();
+  renderProfileScreen();
+}
+
+function disconnectPartner() {
+  if (!confirm('Are you sure you want to disconnect from your partner?')) return;
+  const users = DB.getUsers();
+  const partnerEmail = users[currentUser.email].partnerEmail;
+  users[currentUser.email].partnerEmail = '';
+  if (partnerEmail && users[partnerEmail]) users[partnerEmail].partnerEmail = '';
+  DB.set('users', users);
+  currentUser = users[currentUser.email];
+  showToast('💔 Partner disconnected', 'info');
+  renderHomeScreen();
+  renderProfileScreen();
+}
+
+// ---- NOTIFICATIONS ----
+function toggleNotifPanel() {
+  const panel = document.getElementById('notif-panel');
+  if (panel.classList.contains('open')) {
+    panel.classList.remove('open');
+  } else {
+    panel.classList.add('open');
+    renderNotifPanel();
+    markNotificationsRead();
+  }
+}
+
+function renderNotifPanel() {
+  if (!currentUser) return;
+  const notifs = DB.getNotifications().filter(n => n.toEmail === currentUser.email || !n.toEmail);
+  const list = document.getElementById('notif-list');
+
+  if (notifs.length === 0) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🔔</div><div class="empty-state-text">No notifications yet</div></div>`;
+    return;
+  }
+  list.innerHTML = notifs.slice(0, 20).map(n => `
+    <div class="notif-item ${n.read ? '' : 'notif-unread'}">
+      <div class="notif-icon">${n.icon}</div>
+      <div class="notif-content">
+        <div class="notif-msg">${escapeHtml(n.message)}</div>
+        <div class="notif-time">${timeAgo(n.timestamp)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function markNotificationsRead() {
+  if (!currentUser) return;
+  const notifs = DB.getNotifications();
+  notifs.forEach(n => { if (n.toEmail === currentUser.email) n.read = true; });
+  DB.set('notifications', notifs);
+  updateNotifBadge();
+}
+
+function clearAllNotifications() {
+  if (!currentUser) return;
+  const notifs = DB.getNotifications().filter(n => n.toEmail !== currentUser.email);
+  DB.set('notifications', notifs);
+  renderNotifPanel();
+  updateNotifBadge();
+}
+
+function updateNotifBadge() {
+  if (!currentUser) return;
+  const notifs = DB.getNotifications().filter(n => n.toEmail === currentUser.email && !n.read);
+  const badge = document.getElementById('notif-badge');
+  if (badge) {
+    if (notifs.length > 0) {
+      badge.classList.remove('hidden');
+      badge.textContent = notifs.length > 9 ? '9+' : notifs.length;
+    } else {
+      badge.classList.add('hidden');
+    }
+  }
+}
+
+async function initNativeNotifications() {
+  try {
+    const local = window.Capacitor?.Plugins?.LocalNotifications;
+    if (!local) return;
+    const platform = window.Capacitor?.getPlatform?.() || 'web';
+
+    const perm = await local.checkPermissions();
+    if (perm.display !== 'granted') {
+      await local.requestPermissions();
+    }
+
+    // Android 8+ requires a channel for user-visible notifications.
+    if (platform === 'android' && typeof local.createChannel === 'function') {
+      await local.createChannel({
+        id: 'partner-updates',
+        name: 'Partner Updates',
+        description: 'Alerts when your partner sends updates',
+        importance: 5,
+        visibility: 1,
+        sound: 'default'
+      });
+    }
+
+    nativeNotifReady = true;
+  } catch (err) {
+    console.warn('Native notification init failed:', err);
+    nativeNotifReady = false;
+  }
+}
+
+function persistShownNotifIds() {
+  DB.set('shownNotifIds', Array.from(shownNotifIds).slice(-200));
+}
+
+async function notifyPhoneForUnreadNotifications() {
+  if (!currentUser || !notifEnabled || !nativeNotifReady) return;
+  const local = window.Capacitor?.Plugins?.LocalNotifications;
+  if (!local) return;
+
+  const unread = DB.getNotifications()
+    .filter(n => n.toEmail === currentUser.email && !n.read)
+    .slice(0, 5);
+
+  for (const n of unread) {
+    if (!n.id || shownNotifIds.has(n.id)) continue;
+    try {
+      await local.schedule({
+        notifications: [{
+          id: Number(String(n.timestamp || Date.now()).slice(-8)),
+          title: 'Krisha Partner Update',
+          body: n.message,
+          schedule: { at: new Date(Date.now() + 500) },
+          channelId: 'partner-updates',
+          extra: { notifId: n.id, type: n.type || 'update' }
+        }]
+      });
+      shownNotifIds.add(n.id);
+    } catch (err) {
+      console.warn('Failed to schedule local notification:', err);
+    }
+  }
+
+  persistShownNotifIds();
+}
+
+function toggleNotifications() {
+  notifEnabled = !notifEnabled;
+  const toggle = document.getElementById('notif-toggle');
+  const statusText = document.getElementById('notif-status-text');
+  toggle?.classList.toggle('on', notifEnabled);
+  if (statusText) statusText.textContent = notifEnabled ? 'Enabled' : 'Disabled';
+
+  if (notifEnabled && 'Notification' in window) {
+    Notification.requestPermission();
+  }
+  showToast(notifEnabled ? '🔔 Notifications enabled' : '🔕 Notifications disabled', 'info');
+
+  if (notifEnabled) {
+    notifyPhoneForUnreadNotifications();
+  }
+}
+
+// ---- SYNC ----
+function startSync() {
+  stopSync();
+  syncInterval = setInterval(() => {
+    if (!currentUser) return;
+    const users = DB.getUsers();
+    const user = users[currentUser.email];
+    if (!user) return;
+
+    const partner = getPartner();
+    if (partner) {
+      // Update partner mood display
+      const partnerMoodEl = document.getElementById('partner-mood-emoji');
+      const partnerMoodTextEl = document.getElementById('partner-mood-text');
+      const partnerMoodTimeEl = document.getElementById('partner-mood-time');
+      if (partnerMoodEl) partnerMoodEl.textContent = partner.moodEmoji || '😊';
+      if (partnerMoodTextEl) partnerMoodTextEl.textContent = partner.mood || 'Happy';
+      if (partnerMoodTimeEl) partnerMoodTimeEl.textContent = timeAgo(partner.moodUpdated);
+    }
+    updateNotifBadge();
+    renderLatestLoveMessage();
+    notifyPhoneForUnreadNotifications();
+  }, 3000);
+}
+
+function stopSync() {
+  if (syncInterval) { clearInterval(syncInterval); syncInterval = null; }
+}
+
+// ---- HELPERS ----
+function getPartner() {
+  if (!currentUser) return null;
+  const users = DB.getUsers();
+  const user = users[currentUser.email];
+  if (!user || !user.partnerEmail) return null;
+  return users[user.partnerEmail] || null;
+}
+
+function openModal(id) {
+  const m = document.getElementById(id);
+  if (m) m.classList.add('open');
+}
+
+function closeModal(id) {
+  const m = document.getElementById(id);
+  if (m) m.classList.remove('open');
+}
+
+function togglePassword(inputId, icon) {
+  const inp = document.getElementById(inputId);
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    icon.className = 'fas fa-eye-slash input-toggle';
+  } else {
+    inp.type = 'password';
+    icon.className = 'fas fa-eye input-toggle';
+  }
+}
+
+function handleAvatarUpload(input, targetId) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    if (targetId === 'reg-avatar') {
+      const img = document.getElementById('reg-avatar');
+      const emoji = document.getElementById('reg-avatar-emoji');
+      img.src = e.target.result;
+      img.style.display = 'block';
+      emoji.style.display = 'none';
+    } else if (targetId === 'profile-avatar-img') {
+      const img = document.getElementById('profile-avatar-img');
+      const emoji = document.getElementById('profile-avatar-emoji');
+      img.src = e.target.result;
+      img.style.display = 'block';
+      emoji.style.display = 'none';
+
+      if (currentUser) {
+        const users = DB.getUsers();
+        users[currentUser.email].avatar = e.target.result;
+        DB.set('users', users);
+        currentUser.avatar = e.target.result;
+        showToast('📷 Profile photo updated!', 'success');
+
+        const homeAv = document.getElementById('home-avatar');
+        if (homeAv) homeAv.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+      }
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function selectCategory(cat, btn) {
+  selectedCategory = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function timeAgo(ts) {
+  const now = Date.now();
+  const t = typeof ts === 'string' ? new Date(ts).getTime() : ts;
+  const diff = Math.floor((now - t) / 1000);
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+  if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+  return Math.floor(diff / 86400) + 'd ago';
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showToast(msg, type = 'success') {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  const icons = { success: '✅', error: '🚨', warning: '⚠️', info: 'ℹ️' };
+  const colors = {
+    success: 'rgba(255,45,111,0.3)',
+    error: 'rgba(239,68,68,0.4)',
+    warning: 'rgba(251,191,36,0.4)',
+    info: 'rgba(59,130,246,0.3)'
+  };
+  toast.style.borderColor = colors[type] || colors.success;
+  toast.innerHTML = `<span class="toast-icon">${icons[type] || '💕'}</span><span>${msg}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => { toast.classList.add('toast-exit'); setTimeout(() => toast.remove(), 300); }, 3200);
+}
+
+function launchHearts() {
+  const overlay = document.getElementById('hearts-overlay');
+  const emojis = ['❤️','💕','💖','💗','💓','💝','💞'];
+  for (let i = 0; i < 20; i++) {
+    setTimeout(() => {
+      const h = document.createElement('div');
+      h.className = 'floating-heart';
+      h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      h.style.left = Math.random() * 90 + '%';
+      h.style.fontSize = (16 + Math.random() * 20) + 'px';
+      h.style.animationDuration = (2 + Math.random() * 2) + 's';
+      h.style.animationDelay = (Math.random() * 0.5) + 's';
+      overlay.appendChild(h);
+      setTimeout(() => h.remove(), 4000);
+    }, i * 100);
+  }
+}
+
+function pulseAction() {
+  // small visual pulse on miss count
+  const el = document.getElementById('miss-count');
+  if (el) {
+    el.style.transform = 'scale(1.5)';
+    el.style.color = '#ff6b9d';
+    setTimeout(() => { el.style.transform = 'scale(1)'; el.style.color = ''; }, 300);
+  }
+}
+
+// Char counter for secret input
+document.getElementById('secret-text-input')?.addEventListener('input', function() {
+  document.getElementById('secret-char-count').textContent = this.value.length;
+});
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('open');
+  });
+});
+
+// Close notif panel on outside click
+document.getElementById('app-wrapper').addEventListener('click', function(e) {
+  const panel = document.getElementById('notif-panel');
+  if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.closest('.notif-btn')) {
+    panel.classList.remove('open');
+  }
+});
+
+// ---- PARTICLES ----
+(function() {
+  const canvas = document.getElementById('particles-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width = Math.min(430, window.innerWidth);
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * W;
+      this.y = Math.random() * H;
+      this.r = Math.random() * 1.5 + 0.3;
+      this.vx = (Math.random() - 0.5) * 0.3;
+      this.vy = -Math.random() * 0.4 - 0.1;
+      this.alpha = Math.random() * 0.5 + 0.1;
+      this.pulse = Math.random() * Math.PI * 2;
+    }
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+      this.pulse += 0.02;
+      this.alpha = (Math.sin(this.pulse) * 0.2 + 0.3);
+      if (this.y < -5) this.reset();
+    }
+    draw() {
+      ctx.save();
+      ctx.globalAlpha = this.alpha;
+      ctx.fillStyle = '#ff2d6f';
+      ctx.shadowBlur = 6;
+      ctx.shadowColor = '#ff2d6f';
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  for (let i = 0; i < 60; i++) particles.push(new Particle());
+
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+
+// ---- INIT ----
+window.addEventListener('load', function() {
+  seedDemoAccounts();
+  CloudSync.init();
+
+  // Check if user is already logged in
+  const savedEmail = DB.getCurrentUser();
+  const users = DB.getUsers();
+
+  setTimeout(() => {
+    if (savedEmail && users[savedEmail]) {
+      currentUser = users[savedEmail];
+      CloudSync.syncAllLocal();
+      CloudSync.startRealtime();
+      showScreen('home');
+      renderHomeScreen();
+      startSync();
+    } else {
+      showScreen('splash');
+    }
+  }, 1800);
+
+  // Request notification permission
+  if ('Notification' in window && Notification.permission === 'default') {
+    setTimeout(() => Notification.requestPermission(), 3000);
+  }
+
+  initNativeNotifications();
+});
+</script>
+</body>
+</html>
