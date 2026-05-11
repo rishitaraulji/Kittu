@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
@@ -6,12 +6,21 @@ import { useAuth } from '../../context/AuthContext';
 const Splash = () => {
   const navigate = useNavigate();
   const { currentUser, loading } = useAuth();
+  const splashStartRef = useRef(Date.now());
+  const [readyToRedirect, setReadyToRedirect] = useState(false);
 
   useEffect(() => {
-    if (!loading && currentUser) {
+    const elapsed = Date.now() - splashStartRef.current;
+    const remaining = Math.max(0, 1250 - elapsed);
+    const timer = window.setTimeout(() => setReadyToRedirect(true), remaining);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (readyToRedirect && !loading && currentUser) {
       navigate('/home');
     }
-  }, [currentUser, loading, navigate]);
+  }, [currentUser, loading, navigate, readyToRedirect]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[100dvh] bg-bg-primary p-10">
@@ -47,7 +56,7 @@ const Splash = () => {
         transition={{ delay: 0.5, duration: 0.8 }}
         className="text-[15px] text-text-soft tracking-wide mb-14 opacity-85 text-center"
       >
-        Love knows no distance 💕
+        Love knows no distance, even on first load 💕
       </motion.p>
 
       <motion.button 

@@ -1,517 +1,515 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '../../context/AuthContext';
-import { Heart, Trash2, X, Circle, Eraser, Sliders } from 'lucide-react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Heart, Eraser, Palette, Trash2, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { socketService, DrawingPoint, HeartReaction } from '../../services/socketService';
-import { addDoc, collection, doc, limit, onSnapshot, orderBy, query, serverTimestamp, setDoc } from 'firebase/firestore';
+import { doc, onSnapshot, serverTimestamp, setDoc } from 'firebase/firestore';
+import { useAuth } from '../../context/AuthContext';
 import { db } from '../../firebase/config';
+import {
+  relationshipCanvasStrokesRef,
+  relationshipCanvasStrokesQuery,
+  relationshipDocRef,
+  relationshipIdFor,
+  type RelationshipCanvasStroke,
+} from '../../services/relationshipRealtime';
+
+type CanvasReaction = {
+  id: string;
+  message: string;
+  userId: string;
+  timestamp: number;
+};
+
+type LiveRoom = {
+  presence?: Record<string, { activity?: string; lastActiveAt?: unknown }>;
+  participants?: string[];
+};
+
+const COLORS = ['#FF00E5', '#00F0FF', '#22C55E', '#FDE047', '#FFFFFF'];
+const REACTIONS = ['aww ❤️', 'miss you 🥺', 'idiot 😭'];
+
+const createId = () => `${Date.now()}_${Math.random().toString(16).slice(2)}`;
 
 const LiveCanvas = () => {
-  const { partnerName, userId, userProfile } = useAuth();
+  const { currentUser, userProfile, partnerName } = useAuth();
   const navigate = useNavigate();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isDrawing, setIsDrawing] = useState(false);
+  const isDrawingRef = useRef(false);
+  const activeStrokeIdRef = useRef<string | null>(null);
+  const lastPointByStrokeRef = useRef(new Map<string, RelationshipCanvasStroke>());
+  const historyRef = useRef<RelationshipCanvasStroke[]>([]);
+  const processedIdsRef = useRef(new Set<string>());
+  const reactionTimerRef = useRef<number | null>(null);
+
   const [color, setColor] = useState('#FF00E5');
   const [brushSize, setBrushSize] = useState(4);
-  const [partnerDrawing, setPartnerDrawing] = useState(false);
   const [isEraser, setIsEraser] = useState(false);
-  const [showBrushSlider, setShowBrushSlider] = useState(false);
-  const [heartReactions, setHeartReactions] = useState<HeartReaction[]>([]);
-  const [particles, setParticles] = useState<Array<{id: string, x: number, y: number, vx: number, vy: number}>>([]);
-  const [currentStroke, setCurrentStroke] = useState<DrawingPoint[]>([]);
-  const lastPointRef = useRef<DrawingPoint | null>(null);
+  const [showPalette, setShowPalette] = useState(false);
+  const [canvasKey, setCanvasKey] = useState(0);
+  const [room, setRoom] = useState<LiveRoom | null>(null);
+  const [reactions, setReactions] = useState<CanvasReaction[]>([]);
 
-  const colors = ['#FF00E5', '#00F0FF', '#FFB800', '#00FF66', '#FFFFFF'];
   const partnerId = userProfile?.partnerId || null;
-  const relationshipId = userId && partnerId ? [userId, partnerId].sort().join('_') : null;
-  const roomRef = relationshipId ? doc(db, 'relationships', relationshipId) : null;
-  const eventsRef = relationshipId ? collection(db, 'relationships', relationshipId, 'canvasEvents') : null;
-  const seenEventIdsRef = useRef<Set<string>>(new Set());
+  const myUid = currentUser?.uid || null;
+  const relationshipId = useMemo(() => {
+    if (!myUid || !partnerId) return null;
+    return relationshipIdFor(myUid, partnerId);
+  }, [myUid, partnerId]);
 
-  useEffect(() => {
-    // When relationship changes (or user signs in/out), reset event de-dupe.
-    seenEventIdsRef.current = new Set();
-    lastPointRef.current = null;
-    setPartnerDrawing(false);
-  }, [relationshipId, userId]);
+  const roomRef = useMemo(() => (relationshipId ? relationshipDocRef(relationshipId) : null), [relationshipId]);
+  const strokesRef = useMemo(() => (relationshipId ? relationshipCanvasStrokesRef(relationshipId) : null), [relationshipId]);
+  const strokeQuery = useMemo(() => (relationshipId ? relationshipCanvasStrokesQuery(relationshipId) : null), [relationshipId]);
+  const partnerDrawing = !!(partnerId && room?.presence?.[partnerId]?.activity === 'drawing');
+  const displayPartner = partnerName || 'Partner';
 
-  useEffect(() => {
+  const resizeCanvas = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    const parent = canvas.parentElement;
+    if (!parent) return;
 
-    // Resize canvas to match container
-    const resizeCanvas = () => {
-      const parent = canvas.parentElement;
-      if (parent) {
-        const tempCanvas = document.createElement('canvas');
-        const tempCtx = tempCanvas.getContext('2d');
-        if (tempCtx) {
-          tempCanvas.width = canvas.width;
-          tempCanvas.height = canvas.height;
-          tempCtx.drawImage(canvas, 0, 0);
-        }
-        
-        canvas.width = parent.clientWidth;
-        canvas.height = parent.clientHeight;
-        
-        const ctx = canvas.getContext('2d');
-        if (ctx && tempCtx) {
-          ctx.drawImage(tempCanvas, 0, 0);
-        }
-      }
-    };
+    const ratio = window.devicePixelRatio || 1;
+    canvas.width = Math.floor(parent.clientWidth * ratio);
+    canvas.height = Math.floor(parent.clientHeight * ratio);
 
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-    
-    // Firestore realtime sync (no server required)
-    let unsubEvents: (() => void) | null = null;
-    if (eventsRef && userId) {
-      // Important: replay events oldest -> newest, otherwise strokes can render out-of-order.
-      const qy = query(eventsRef, orderBy('createdAt', 'asc'), limit(300));
-      unsubEvents = onSnapshot(qy, (snap) => {
-        const changes = snap.docChanges();
-        for (const ch of changes) {
-          if (ch.type !== 'added') continue;
-          if (seenEventIdsRef.current.has(ch.doc.id)) continue;
-          seenEventIdsRef.current.add(ch.doc.id);
-          const data = ch.doc.data() as any;
-          if (data.from === userId) continue;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    replayHistory();
+  };
 
-          if (data.type === 'strokeStart') {
-            lastPointRef.current = data.point as DrawingPoint;
-            setPartnerDrawing(true);
-          } else if (data.type === 'drawPoint') {
-            drawPoint(data.point as DrawingPoint, false);
-          } else if (data.type === 'strokeEnd') {
-            lastPointRef.current = null;
-            setPartnerDrawing(false);
-          } else if (data.type === 'clear') {
-            clearCanvas(false);
-          } else if (data.type === 'heart') {
-            const reaction: HeartReaction = {
-              x: data.x,
-              y: data.y,
-              userId: data.from,
-              timestamp: Date.now(),
-            };
-            setHeartReactions((prev) => [...prev, reaction]);
-            setTimeout(() => {
-              setHeartReactions((prev) => prev.filter((r) => r !== reaction));
-            }, 3000);
-          }
-        }
-      });
-    }
-    
-    // Initialize ambient particles
-    const newParticles = Array.from({ length: 15 }, (_, i) => ({
-      id: `particle-${i}`,
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.5
-    }));
-    setParticles(newParticles);
-    
-    return () => {
-      window.removeEventListener('resize', resizeCanvas);
-      socketService.disconnect();
-      unsubEvents?.();
-    };
-  }, [userId, relationshipId, eventsRef]);
-
-  const drawSmoothLine = (from: DrawingPoint, to: DrawingPoint, isLocal: boolean = true) => {
+  const clearSurface = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-
-    ctx.lineWidth = to.size;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    
-    if (to.isEraser) {
-      ctx.globalCompositeOperation = 'destination-out';
-      ctx.shadowBlur = 0;
-    } else {
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.strokeStyle = to.color;
-      ctx.shadowBlur = 20;
-      ctx.shadowColor = to.color;
-    }
-
-    ctx.beginPath();
-    ctx.moveTo(from.x, from.y);
-    
-    // Calculate control points for smooth bezier curve
-    const cpx = (from.x + to.x) / 2;
-    const cpy = (from.y + to.y) / 2;
-    
-    ctx.quadraticCurveTo(from.x, from.y, cpx, cpy);
-    ctx.quadraticCurveTo(cpx, cpy, to.x, to.y);
-    
-    ctx.stroke();
-    
-    // Add glow effect for non-eraser
-    if (!to.isEraser) {
-      ctx.globalAlpha = 0.3;
-      ctx.lineWidth = to.size * 2;
-      ctx.stroke();
-      ctx.globalAlpha = 1;
-    }
-  };
-  
-  const drawPoint = (point: DrawingPoint, emit: boolean = true) => {
-    if (lastPointRef.current) {
-      drawSmoothLine(lastPointRef.current, point);
-    } else {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-      
-      ctx.fillStyle = point.isEraser ? 'rgba(0,0,0,1)' : point.color;
-      ctx.beginPath();
-      ctx.arc(point.x, point.y, point.size / 2, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    
-    lastPointRef.current = point;
-    
-    if (emit && eventsRef && userId) {
-      addDoc(eventsRef, {
-        type: 'drawPoint',
-        from: userId,
-        point,
-        createdAt: serverTimestamp(),
-      });
-    } else if (emit) {
-      socketService.emitDraw(point);
-    }
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.restore();
+    const ratio = window.devicePixelRatio || 1;
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
   };
 
-  const startDrawing = (e: React.MouseEvent | React.TouchEvent) => {
-    setIsDrawing(true);
-    const point = getCoordinates(e);
-    if (point) {
-      const drawPointData: DrawingPoint = {
-        ...point,
-        color,
-        size: brushSize,
-        isEraser
-      };
-      lastPointRef.current = drawPointData;
-      if (eventsRef && userId) {
-        addDoc(eventsRef, { type: 'strokeStart', from: userId, point: drawPointData, createdAt: serverTimestamp() });
-        addDoc(eventsRef, { type: 'drawPoint', from: userId, point: drawPointData, createdAt: serverTimestamp() });
-      } else {
-        socketService.emitStrokeStart(drawPointData);
-        socketService.emitDraw(drawPointData);
-      }
-    }
-
-    if (roomRef && userId) {
-      setDoc(
-        roomRef,
-        {
-        updatedAt: serverTimestamp(),
-        [`presence.${userId}.activity`]: 'drawing',
-        [`presence.${userId}.lastActiveAt`]: serverTimestamp(),
-        },
-        { merge: true }
-      );
-    }
-  };
-
-  const stopDrawing = () => {
-    if (isDrawing) {
-      setIsDrawing(false);
-      lastPointRef.current = null;
-      if (eventsRef && userId) {
-        addDoc(eventsRef, { type: 'strokeEnd', from: userId, createdAt: serverTimestamp() });
-      } else {
-        socketService.emitStrokeEnd();
-      }
-    }
-
-    if (roomRef && userId) {
-      setDoc(
-        roomRef,
-        {
-        updatedAt: serverTimestamp(),
-        [`presence.${userId}.activity`]: 'active',
-        [`presence.${userId}.lastActiveAt`]: serverTimestamp(),
-        },
-        { merge: true }
-      );
-    }
-  };
-  
-  const getCoordinates = (e: React.MouseEvent | React.TouchEvent): {x: number, y: number} | null => {
-    const canvas = canvasRef.current;
-    if (!canvas) return null;
-    
-    const rect = canvas.getBoundingClientRect();
-    let clientX, clientY;
-
-    if ('touches' in e) {
-      clientX = e.touches[0].clientX;
-      clientY = e.touches[0].clientY;
-    } else {
-      clientX = (e as React.MouseEvent).clientX;
-      clientY = (e as React.MouseEvent).clientY;
-    }
-
-    return {
-      x: clientX - rect.left,
-      y: clientY - rect.top
-    };
-  };
-
-  const draw = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!isDrawing) return;
-    
-    const point = getCoordinates(e);
-    if (point) {
-      const pointData: DrawingPoint = {
-        ...point,
-        color,
-        size: brushSize,
-        isEraser
-      };
-      drawPoint(pointData);
-    }
-  };
-
-  const clearCanvas = (emit: boolean = true) => {
+  const drawStrokePoint = (point: RelationshipCanvasStroke, previous?: RelationshipCanvasStroke) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    if (ctx) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (!ctx || point.x == null || point.y == null) return;
+
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.globalCompositeOperation = point.isEraser ? 'destination-out' : 'source-over';
+
+    if (point.isEraser) {
+      ctx.shadowBlur = 0;
+      ctx.strokeStyle = 'rgba(0,0,0,1)';
+    } else {
+      ctx.strokeStyle = point.color || color;
+      ctx.shadowBlur = 18;
+      ctx.shadowColor = point.color || color;
     }
-    
-    if (emit) {
-      if (eventsRef && userId) {
-        addDoc(eventsRef, { type: 'clear', from: userId, createdAt: serverTimestamp() });
-      } else {
-        socketService.emitClearCanvas();
+
+    if (previous && previous.x != null && previous.y != null && previous.strokeId === point.strokeId) {
+      ctx.lineWidth = point.size || brushSize;
+      ctx.beginPath();
+      ctx.moveTo(previous.x, previous.y);
+      const midX = (previous.x + point.x) / 2;
+      const midY = (previous.y + point.y) / 2;
+      ctx.quadraticCurveTo(previous.x, previous.y, midX, midY);
+      ctx.quadraticCurveTo(midX, midY, point.x, point.y);
+      ctx.stroke();
+
+      if (!point.isEraser) {
+        ctx.globalAlpha = 0.24;
+        ctx.lineWidth = (point.size || brushSize) * 2;
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+      return;
+    }
+
+    ctx.fillStyle = point.isEraser ? 'rgba(0,0,0,1)' : (point.color || color);
+    ctx.beginPath();
+    ctx.arc(point.x, point.y, Math.max(1.5, (point.size || brushSize) / 2), 0, Math.PI * 2);
+    ctx.fill();
+  };
+
+  const replayHistory = () => {
+    clearSurface();
+    lastPointByStrokeRef.current = new Map();
+
+    for (const item of historyRef.current) {
+      if (item.action === 'clear') {
+        clearSurface();
+        lastPointByStrokeRef.current = new Map();
+        continue;
+      }
+      if (item.action !== 'point') continue;
+
+      const previous = item.strokeId ? lastPointByStrokeRef.current.get(item.strokeId) : undefined;
+      drawStrokePoint(item, previous);
+      if (item.strokeId) {
+        lastPointByStrokeRef.current.set(item.strokeId, item);
       }
     }
   };
-  
-  const sendHeartReaction = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    
-    const x = Math.random() * canvas.width;
-    const y = Math.random() * canvas.height;
-    
-    if (eventsRef && userId) {
-      addDoc(eventsRef, { type: 'heart', from: userId, x, y, createdAt: serverTimestamp() });
-    } else {
-      socketService.emitHeartReaction(x, y);
-    }
-    
-    // Add local heart reaction
-    const reaction: HeartReaction = {
-      x,
-      y,
-      userId: userId || 'local',
-      timestamp: Date.now()
+
+  useEffect(() => {
+    if (!relationshipId || !roomRef || !strokesRef || !strokeQuery || !myUid || !partnerId) return;
+
+    const initCanvas = () => {
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
     };
-    setHeartReactions(prev => [...prev, reaction]);
-    setTimeout(() => {
-      setHeartReactions(prev => prev.filter(r => r !== reaction));
-    }, 3000);
+
+    initCanvas();
+
+    const unsubRoom = onSnapshot(roomRef, async (snap) => {
+      if (!snap.exists()) {
+        await setDoc(
+          roomRef,
+          {
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+            participants: [myUid, partnerId],
+          },
+          { merge: true }
+        );
+        return;
+      }
+      setRoom(snap.data() as LiveRoom);
+    });
+
+    const unsubStrokes = onSnapshot(strokeQuery, (snap) => {
+      const added = snap.docChanges().filter((change) => change.type === 'added');
+      if (!added.length && historyRef.current.length === 0) {
+        return;
+      }
+
+      let needsReplay = false;
+
+      for (const change of added) {
+        if (processedIdsRef.current.has(change.doc.id)) continue;
+        processedIdsRef.current.add(change.doc.id);
+
+        const data = { id: change.doc.id, ...(change.doc.data() as RelationshipCanvasStroke) };
+        historyRef.current.push(data);
+
+        if (data.action === 'clear') {
+          clearSurface();
+          lastPointByStrokeRef.current = new Map();
+          needsReplay = false;
+          continue;
+        }
+
+        if (data.action !== 'point') continue;
+        const previous = data.strokeId ? lastPointByStrokeRef.current.get(data.strokeId) : undefined;
+        drawStrokePoint(data, previous);
+        if (data.strokeId) {
+          lastPointByStrokeRef.current.set(data.strokeId, data);
+        }
+      }
+
+      if (needsReplay) {
+        replayHistory();
+      }
+    });
+
+    return () => {
+      window.removeEventListener('resize', resizeCanvas);
+      unsubRoom();
+      unsubStrokes();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [relationshipId, roomRef, strokesRef, strokeQuery, myUid, partnerId]);
+
+  const updatePresence = async (activity: 'active' | 'drawing') => {
+    if (!roomRef || !myUid) return;
+    await setDoc(
+      roomRef,
+      {
+        updatedAt: serverTimestamp(),
+        [`presence.${myUid}.activity`]: activity,
+        [`presence.${myUid}.lastActiveAt`]: serverTimestamp(),
+      },
+      { merge: true }
+    );
   };
 
-  return (
-    <div className="fixed inset-0 bg-[#0B001A] z-[100] flex flex-col overflow-hidden">
-      {/* Background Ambience */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(0,240,255,0.1)_0%,transparent_50%),radial-gradient(ellipse_at_bottom_left,rgba(255,0,229,0.1)_0%,transparent_50%)] pointer-events-none"></div>
-      
-      {/* Film Grain Texture */}
-      <div className="absolute inset-0 opacity-[0.02] pointer-events-none"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-        }}
-      />
+  const getCanvasPoint = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return null;
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top,
+    };
+  };
 
-      {/* Top Header */}
-      <div className="relative z-10 flex items-center justify-between p-5 pt-8 bg-gradient-to-b from-[#0B001A]/90 to-transparent backdrop-blur-sm">
-        <button onClick={() => navigate(-1)} className="p-3 bg-white/10 backdrop-blur-md rounded-full text-white border border-white/20 active:scale-95 transition-all hover:bg-white/15 hover:border-white/30 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-          <X className="w-5 h-5" />
+  const addStrokePoint = async (point: { x: number; y: number }, strokeId: string) => {
+    if (!strokesRef || !myUid) return;
+    const docId = createId();
+    const payload: RelationshipCanvasStroke = {
+      action: 'point',
+      strokeId,
+      x: point.x,
+      y: point.y,
+      color,
+      size: brushSize,
+      timestamp: Date.now(),
+      userId: myUid,
+      isEraser,
+    };
+
+    processedIdsRef.current.add(docId);
+    const previous = lastPointByStrokeRef.current.get(strokeId);
+    drawStrokePoint(payload, previous);
+    lastPointByStrokeRef.current.set(strokeId, payload);
+    historyRef.current.push({ id: docId, ...payload });
+
+    await setDoc(doc(strokesRef, docId), payload);
+  };
+
+  const startDrawing = async (event: React.PointerEvent<HTMLCanvasElement>) => {
+    if (!myUid) return;
+    isDrawingRef.current = true;
+    activeStrokeIdRef.current = createId();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    await updatePresence('drawing');
+
+    const point = getCanvasPoint(event);
+    if (point) {
+      await addStrokePoint(point, activeStrokeIdRef.current);
+    }
+  };
+
+  const continueDrawing = async (event: React.PointerEvent<HTMLCanvasElement>) => {
+    if (!isDrawingRef.current || !activeStrokeIdRef.current) return;
+    const point = getCanvasPoint(event);
+    if (point) {
+      await addStrokePoint(point, activeStrokeIdRef.current);
+    }
+  };
+
+  const stopDrawing = async () => {
+    if (!isDrawingRef.current) return;
+    isDrawingRef.current = false;
+    activeStrokeIdRef.current = null;
+    await updatePresence('active');
+  };
+
+  const clearCanvas = async () => {
+    if (!strokesRef || !myUid) return;
+    const docId = createId();
+    const payload: RelationshipCanvasStroke = {
+      action: 'clear',
+      timestamp: Date.now(),
+      userId: myUid,
+    };
+    processedIdsRef.current.add(docId);
+    historyRef.current.push({ id: docId, ...payload });
+    clearSurface();
+    lastPointByStrokeRef.current = new Map();
+    await setDoc(doc(strokesRef, docId), payload);
+  };
+
+  const sendReaction = async (message: string) => {
+    if (!roomRef || !myUid) return;
+    const reaction: CanvasReaction = {
+      id: createId(),
+      message,
+      userId: myUid,
+      timestamp: Date.now(),
+    };
+
+    setReactions((prev) => [...prev, reaction]);
+    if (reactionTimerRef.current) {
+      window.clearTimeout(reactionTimerRef.current);
+    }
+    reactionTimerRef.current = window.setTimeout(() => {
+      setReactions((prev) => prev.filter((item) => item.id !== reaction.id));
+    }, 2800);
+
+    await setDoc(doc(db, 'relationships', relationshipId as string, 'canvas', 'shared'), { lastReaction: reaction }, { merge: true });
+  };
+
+  useEffect(() => {
+    if (!relationshipId) return;
+    const unsub = onSnapshot(doc(db, 'relationships', relationshipId, 'canvas', 'shared'), (snap) => {
+      const data = snap.data() as { lastReaction?: CanvasReaction } | undefined;
+      if (!data?.lastReaction) return;
+      const sharedReaction = data.lastReaction;
+      if (sharedReaction.userId === myUid) return;
+      setReactions((prev) => [...prev, sharedReaction]);
+      window.setTimeout(() => {
+        setReactions((prev) => prev.filter((item) => item.id !== sharedReaction.id));
+      }, 2800);
+    });
+
+    return () => unsub();
+  }, [relationshipId, myUid]);
+
+  const pushReactionToPartner = async (message: string) => {
+    if (!relationshipId || !myUid) return;
+    const reaction: CanvasReaction = {
+      id: createId(),
+      message,
+      userId: myUid,
+      timestamp: Date.now(),
+    };
+    setReactions((prev) => [...prev, reaction]);
+    await setDoc(
+      doc(db, 'relationships', relationshipId, 'canvas', 'meta'),
+      {
+        lastReaction: reaction,
+      },
+      { merge: true }
+    );
+    window.setTimeout(() => {
+      setReactions((prev) => prev.filter((item) => item.id !== reaction.id));
+    }, 2800);
+  };
+
+  const partnerIndicator = partnerDrawing ? `${displayPartner} is drawing...` : `Connected to ${displayPartner}`;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex flex-col overflow-hidden bg-black text-white">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(0,240,255,0.12),transparent_45%),radial-gradient(circle_at_bottom_right,rgba(255,0,229,0.14),transparent_42%),linear-gradient(180deg,#050508_0%,#000_100%)]" />
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)', backgroundSize: '18px 18px' }} />
+
+      <div className="relative z-10 flex items-center justify-between gap-4 px-5 pt-8 pb-4 bg-gradient-to-b from-black/85 to-transparent backdrop-blur-2xl border-b border-white/8">
+        <button
+          onClick={() => navigate(-1)}
+          className="grid h-12 w-12 place-items-center rounded-full border border-white/12 bg-white/5 text-white/85 shadow-[0_0_30px_rgba(255,255,255,0.06)] transition active:scale-95"
+        >
+          <X className="h-5 w-5" />
         </button>
-        <div className="flex flex-col items-center">
-          <div className="flex items-center gap-2">
-            <motion.div 
-              className="w-3 h-3 rounded-full bg-[#00F0FF] shadow-[0_0_12px_#00F0FF]"
-              animate={{ scale: [1, 1.2, 1], opacity: [1, 0.7, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
-            <span className="text-white font-semibold tracking-wide text-sm drop-shadow-[0_0_10px_rgba(0,240,255,0.3)]">Live Connection</span>
-          </div>
-          <motion.span 
-            className="text-[#00F0FF]/80 text-[11px] uppercase tracking-widest mt-1 drop-shadow-[0_0_5px_rgba(0,240,255,0.2)]"
-            animate={{ opacity: partnerDrawing ? [1, 0.5, 1] : 1 }}
+        <div className="flex flex-col items-center text-center">
+          <motion.div
+            className="inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/8 px-4 py-2 text-xs tracking-[0.24em] text-cyan-100"
+            animate={{ opacity: partnerDrawing ? [1, 0.6, 1] : 1 }}
             transition={{ duration: 1, repeat: partnerDrawing ? Infinity : 0 }}
           >
-            {partnerDrawing ? `${partnerName || 'Partner'} is drawing...` : `Connected to ${partnerName || 'Partner'}`}
-          </motion.span>
+            <motion.span className="h-2 w-2 rounded-full bg-cyan-300 shadow-[0_0_18px_rgba(0,240,255,0.9)]" animate={{ scale: [1, 1.25, 1] }} transition={{ duration: 1.8, repeat: Infinity }} />
+            Live Canvas
+          </motion.div>
+          <div className="mt-2 text-[12px] uppercase tracking-[0.26em] text-white/55">{partnerIndicator}</div>
         </div>
-        <div className="w-12 h-12"></div> {/* Spacer for center alignment */}
+        <div className="w-12" />
       </div>
 
-      {/* Drawing Canvas */}
-      <div className="flex-1 relative w-full h-full cursor-crosshair touch-none">
+      <div className="relative z-10 flex-1 overflow-hidden">
         <canvas
           ref={canvasRef}
-          onMouseDown={startDrawing}
-          onMouseUp={stopDrawing}
-          onMouseOut={stopDrawing}
-          onMouseMove={draw}
-          onTouchStart={startDrawing}
-          onTouchEnd={stopDrawing}
-          onTouchMove={draw}
-          className="absolute inset-0 z-10"
+          key={canvasKey}
+          className="absolute inset-0 h-full w-full touch-none cursor-crosshair"
+          onPointerDown={startDrawing}
+          onPointerMove={continueDrawing}
+          onPointerUp={stopDrawing}
+          onPointerCancel={stopDrawing}
+          onPointerLeave={stopDrawing}
         />
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
-          <p className="text-white/30 font-dancing text-4xl text-center px-10 leading-relaxed blur-[1px]">
-            Draw something beautiful together...
+
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center px-10 text-center opacity-20">
+          <p className="max-w-xs text-4xl font-thin leading-tight text-white/35 drop-shadow-[0_0_25px_rgba(255,255,255,0.15)]">
+            Draw something intimate together...
           </p>
         </div>
+
+        <AnimatePresence>
+          {reactions.map((reaction) => (
+            <motion.div
+              key={reaction.id}
+              initial={{ opacity: 0, y: 20, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -16, scale: 0.96 }}
+              className="absolute left-1/2 top-20 z-20 -translate-x-1/2 rounded-full border border-white/10 bg-black/55 px-4 py-2 text-sm text-white/85 backdrop-blur-2xl shadow-[0_0_30px_rgba(255,255,255,0.08)]"
+            >
+              {reaction.message}
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
 
-      {/* Brush Size Slider */}
-      <AnimatePresence>
-        {showBrushSlider && (
-          <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.9 }}
-            className="absolute bottom-24 left-5 right-5 bg-white/15 backdrop-blur-xl rounded-2xl p-4 border border-white/30 shadow-[0_10px_40px_rgba(0,0,0,0.3)]"
+      <div className="relative z-10 border-t border-white/10 bg-black/85 px-4 pb-[calc(env(safe-area-inset-bottom,0px)+16px)] pt-4 backdrop-blur-2xl">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs text-white/60">
+            <Palette className="h-4 w-4 text-cyan-300" />
+            Neon brush
+          </div>
+          <button
+            onClick={() => setShowPalette((value) => !value)}
+            className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/75 transition active:scale-95"
           >
-            <div className="flex items-center gap-3">
-              <span className="text-white/80 text-sm font-medium">Size:</span>
-              <input
-                type="range"
-                min="1"
-                max="20"
-                value={brushSize}
-                onChange={(e) => setBrushSize(Number(e.target.value))}
-                className="flex-1 accent-[#FF00E5] h-2 rounded-full"
-              />
-              <motion.div 
-                className="rounded-full bg-gradient-to-br from-white to-[#00F0FF] shadow-[0_0_20px_rgba(255,255,255,0.5)]"
-                style={{ width: `${Math.min(brushSize + 10, 30)}px`, height: `${Math.min(brushSize + 10, 30)}px` }}
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            {showPalette ? 'Hide tools' : 'Show tools'}
+          </button>
+        </div>
 
-      {/* Heart Reactions */}
-      <AnimatePresence>
-        {heartReactions.map((reaction) => (
-          <motion.div
-            key={`${reaction.timestamp}-${reaction.x}-${reaction.y}`}
-            initial={{ opacity: 0, scale: 0, y: reaction.y }}
-            animate={{ opacity: 1, scale: 1, y: reaction.y - 50 }}
-            exit={{ opacity: 0, scale: 1.5, y: reaction.y - 100 }}
-            transition={{ duration: 2, ease: "easeOut" }}
-            className="absolute pointer-events-none z-20"
-            style={{ left: reaction.x, top: reaction.y }}
+        <AnimatePresence>
+          {showPalette && (
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 12 }}
+              className="mb-3 rounded-3xl border border-white/10 bg-white/5 p-4 backdrop-blur-2xl"
+            >
+              <div className="flex flex-wrap items-center gap-3">
+                {COLORS.map((swatch) => (
+                  <button
+                    key={swatch}
+                    type="button"
+                    onClick={() => setColor(swatch)}
+                    className={`h-8 w-8 rounded-full border transition ${color === swatch ? 'scale-110 border-white shadow-[0_0_18px_rgba(255,255,255,0.45)]' : 'border-white/15'}`}
+                    style={{ backgroundColor: swatch, boxShadow: color === swatch ? `0 0 18px ${swatch}` : 'none' }}
+                  />
+                ))}
+
+                <label className="ml-auto flex items-center gap-3 rounded-full border border-white/10 bg-black/30 px-4 py-2 text-xs text-white/70">
+                  Size
+                  <input type="range" min="1" max="18" value={brushSize} onChange={(e) => setBrushSize(Number(e.target.value))} className="accent-cyan-300" />
+                </label>
+
+                <button
+                  type="button"
+                  onClick={() => setIsEraser((value) => !value)}
+                  className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs transition ${isEraser ? 'border-cyan-300/40 bg-cyan-300/10 text-cyan-100' : 'border-white/10 bg-white/5 text-white/70'}`}
+                >
+                  <Eraser className="h-4 w-4" />
+                  Eraser
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div className="flex items-center justify-between gap-3">
+          <button
+            type="button"
+            onClick={clearCanvas}
+            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70 transition active:scale-95"
           >
-            <Heart className="w-8 h-8 text-[#FF00E5] fill-[#FF00E5] drop-shadow-[0_0_20px_#FF00E5]" />
-          </motion.div>
-        ))}
-      </AnimatePresence>
+            <Trash2 className="h-4 w-4" />
+            Clear canvas
+          </button>
 
-      {/* Ambient Particles */}
-      {particles.map((particle) => (
-        <motion.div
-          key={particle.id}
-          className="absolute w-1 h-1 rounded-full bg-[#00F0FF] opacity-30 pointer-events-none"
-          style={{ left: particle.x, top: particle.y }}
-          animate={{
-            x: [0, 20, -20, 0],
-            y: [0, -20, 20, 0],
-          }}
-          transition={{
-            duration: 10 + Math.random() * 10,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
-      ))}
-
-      {/* Bottom Toolbar */}
-      <div className="relative z-10 p-5 bg-[#0B001A]/90 backdrop-blur-xl border-t border-white/20 pb-10 shadow-[0_-10px_30px_rgba(0,0,0,0.3)]">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex gap-2.5 bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
-            {colors.map(c => (
-              <motion.button
-                key={c}
-                onClick={() => setColor(c)}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                className={`w-7 h-7 rounded-full transition-all ${color === c ? 'scale-125 border-2 border-white shadow-[0_0_15px_rgba(255,255,255,0.5)]' : 'hover:scale-110'}`}
-                style={{ 
-                  backgroundColor: c, 
-                  boxShadow: color === c ? `0 0 20px ${c}, inset 0 0 10px rgba(255,255,255,0.3)` : `0 4px 15px ${c}40`
-                }}
-              />
+          <div className="flex gap-2 overflow-x-auto">
+            {REACTIONS.map((reaction) => (
+              <button
+                key={reaction}
+                type="button"
+                onClick={() => pushReactionToPartner(reaction)}
+                className="whitespace-nowrap rounded-full border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/75 transition active:scale-95"
+              >
+                {reaction}
+              </button>
             ))}
           </div>
+        </div>
 
-          <div className="flex gap-3">
-            <motion.button 
-              onClick={() => clearCanvas()}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="p-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-white/70 hover:text-white hover:bg-white/15 hover:border-white/30 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] active:scale-95 transition-all"
-            >
-              <Trash2 className="w-5 h-5" />
-            </motion.button>
-            <motion.button 
-              onClick={() => setShowBrushSlider(!showBrushSlider)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="p-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-white/70 hover:text-white hover:bg-white/15 hover:border-white/30 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] active:scale-95 transition-all relative"
-            >
-              <Sliders className="w-5 h-5" />
-              <motion.div 
-                className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-[#00F0FF] shadow-[0_0_8px_#00F0FF]"
-                animate={{ scale: [1, 1.3, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
-            </motion.button>
-            <motion.button 
-              onClick={() => setIsEraser(!isEraser)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className={`p-3 backdrop-blur-md rounded-2xl active:scale-95 transition-all border ${
-                isEraser 
-                  ? 'bg-gradient-to-tr from-[#00F0FF] to-[#00F0FF]/60 text-white shadow-[0_0_20px_rgba(0,240,255,0.5)] border-[#00F0FF]/50' 
-                  : 'bg-white/10 border-white/20 text-white/70 hover:text-white hover:bg-white/15 hover:border-white/30'
-              }`}
-            >
-              <Eraser className="w-5 h-5" />
-            </motion.button>
-            <motion.button 
-              onClick={sendHeartReaction}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="p-3 bg-gradient-to-tr from-[#FF00E5] to-[#FF00E5]/60 backdrop-blur-md rounded-2xl text-white shadow-[0_0_20px_rgba(255,0,229,0.5)] hover:shadow-[0_0_30px_rgba(255,0,229,0.7)] active:scale-95 transition-all border border-[#FF00E5]/30"
-            >
-              <Heart className="w-5 h-5 fill-white" />
-            </motion.button>
-          </div>
+        <div className="mt-3 flex items-center justify-center gap-2 text-xs text-white/45">
+          <Heart className="h-3.5 w-3.5 fill-white/70 text-white/70" />
+          Firestore live sync
         </div>
       </div>
     </div>

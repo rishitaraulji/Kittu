@@ -86,68 +86,66 @@ const RelationshipTimer: React.FC<RelationshipTimerProps> = ({ togetherSince, on
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-[#0B001A]/40 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 mb-6 shadow-[0_0_60px_rgba(255,0,229,0.10)] relative overflow-hidden"
+      className="relative mb-6 overflow-hidden rounded-[2rem] border border-white/10 bg-black/35 p-5 shadow-[0_0_60px_rgba(255,0,229,0.12)] backdrop-blur-2xl"
     >
       <motion.div
         className="absolute -inset-10 opacity-70"
         style={{
           background:
-            'radial-gradient(circle at 20% 20%, rgba(0,240,255,0.18), transparent 55%), radial-gradient(circle at 80% 40%, rgba(255,0,229,0.16), transparent 60%)',
+            'radial-gradient(circle at 20% 20%, rgba(0,240,255,0.16), transparent 55%), radial-gradient(circle at 80% 40%, rgba(255,0,229,0.16), transparent 60%)',
           filter: 'blur(18px)',
         }}
         animate={{ opacity: [0.45, 0.75, 0.45], scale: [1, 1.02, 1] }}
         transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      <div className="relative z-10 text-center">
-        <p className="text-[10px] uppercase tracking-[0.32em] text-white/50 mb-3 font-mono">
-          Together Since
-        </p>
+      <div className="relative z-10">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.34em] text-white/50 font-mono">Together Since</p>
+            <h3 className="mt-2 text-lg font-light tracking-wide text-white/90">Real relationship timer</h3>
+          </div>
+          {since && (
+            <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] uppercase tracking-[0.24em] text-white/55">
+              {totalDays} days
+            </div>
+          )}
+        </div>
 
         {!diff ? (
-          <div className="space-y-3">
-            <div className="text-white/90 text-4xl font-thin tracking-tight drop-shadow-[0_0_18px_rgba(255,255,255,0.25)]">
-              —
-            </div>
+          <div className="flex flex-col items-start gap-3">
+            <div className="text-5xl font-thin text-white/90 tracking-tight drop-shadow-[0_0_18px_rgba(255,255,255,0.2)]">—</div>
             <button
               type="button"
               onClick={onSetTogetherSince}
-              className="mx-auto inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs text-white/70 hover:bg-white/10 transition"
+              className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs text-white/75 transition hover:bg-white/10"
             >
-              Set date
+              Set together since
             </button>
           </div>
         ) : (
-          <div className="space-y-4">
-            <div className="flex items-end justify-center gap-4">
-              <div className="text-7xl font-thin text-white tabular-nums tracking-tight drop-shadow-[0_0_40px_rgba(255,255,255,0.25)]">
-                {totalDays}
-              </div>
-              <div className="pb-2 text-[11px] text-white/40 tracking-[0.28em] uppercase">
-                Days
-              </div>
-            </div>
-
-            <div className="flex items-center justify-center gap-2 text-white/60 text-[11px] tracking-wide">
-              <span className="tabular-nums">{diff.years}</span>
-              <span className="opacity-50">Y</span>
-              <span className="tabular-nums">{diff.months}</span>
-              <span className="opacity-50">M</span>
-              <span className="tabular-nums">{diff.days}</span>
-              <span className="opacity-50">D</span>
-            </div>
-
-            <div className="font-mono text-4xl text-white tabular-nums tracking-[0.12em] drop-shadow-[0_0_28px_rgba(255,0,229,0.35)]">
-              {pad2(diff.hours)}:{pad2(diff.minutes)}:
-              <motion.span
-                key={diff.seconds}
-                initial={{ opacity: 0.4, y: -2 }}
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {[
+              { label: 'Years', value: diff.years },
+              { label: 'Months', value: diff.months },
+              { label: 'Days', value: diff.days },
+              { label: 'Hours', value: diff.hours },
+              { label: 'Minutes', value: diff.minutes },
+              { label: 'Seconds', value: diff.seconds },
+            ].map((unit, index) => (
+              <motion.div
+                key={unit.label}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="inline-block"
+                transition={{ delay: index * 0.04 }}
+                className="rounded-[1.4rem] border border-white/10 bg-white/5 px-4 py-4 text-center"
               >
-                {pad2(diff.seconds)}
-              </motion.span>
-            </div>
+                <div className="text-[11px] uppercase tracking-[0.24em] text-white/40">{unit.label}</div>
+                <div className="mt-2 text-4xl font-thin tabular-nums text-white drop-shadow-[0_0_26px_rgba(255,255,255,0.18)]">
+                  {pad2(unit.value)}
+                </div>
+              </motion.div>
+            ))}
           </div>
         )}
       </div>

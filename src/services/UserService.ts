@@ -8,8 +8,6 @@ export interface UserProfile {
   displayName: string;
   connectionCode: string;
   partnerId: string | null;
-  currentMood?: string;
-  moodUpdatedAt?: number;
   togetherSince?: number;
   lastActive?: number;
 }
@@ -91,14 +89,6 @@ export const disconnectPartner = async (currentUid: string, partnerUid: string) 
   const partnerRef = doc(db, 'users', partnerUid);
   await updateDoc(partnerRef, {
     partnerId: null
-  });
-};
-
-export const updateUserMood = async (uid: string, mood: string) => {
-  const userRef = doc(db, 'users', uid);
-  await updateDoc(userRef, {
-    currentMood: mood,
-    moodUpdatedAt: Date.now()
   });
 };
 

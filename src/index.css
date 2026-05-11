@@ -1,33 +1,44 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg-primary: #0a0a0f;
-  --color-bg-secondary: #0d0d1a;
-  --color-bg-card: rgba(255, 45, 111, 0.07);
+  --color-bg-primary: #040408;
+  --color-bg-secondary: #080814;
+  --color-bg-card: rgba(255, 255, 255, 0.045);
   
   --color-accent-primary: #ff2d6f;
-  --color-accent-secondary: #ff6b9d;
-  --color-accent-light: #ff4081;
-  --color-accent-soft: #ffb3c6;
+  --color-accent-secondary: #00f0ff;
+  --color-accent-light: #ff7aa8;
+  --color-accent-soft: #ffe3ec;
   
   --color-text-primary: #ffffff;
-  --color-text-soft: #ffb3c6;
-  --color-text-muted: rgba(255, 179, 198, 0.6);
+  --color-text-soft: rgba(255, 255, 255, 0.8);
+  --color-text-muted: rgba(255, 255, 255, 0.58);
   
-  --color-glass-bg: rgba(255, 255, 255, 0.05);
-  --color-glass-border: rgba(255, 45, 111, 0.2);
+  --color-glass-bg: rgba(255, 255, 255, 0.04);
+  --color-glass-border: rgba(255, 255, 255, 0.1);
   
-  --font-poppins: "Poppins", sans-serif;
-  --font-dancing: "Dancing Script", cursive;
+  --font-poppins: "Inter Tight", "SF Pro Display", "Segoe UI", sans-serif;
+  --font-dancing: "Fraunces", "Iowan Old Style", serif;
 }
 
 @layer base {
+  html, body, #root {
+    min-height: 100%;
+    background-color: var(--color-bg-primary);
+  }
+
   body {
     background-color: var(--color-bg-primary);
     color: var(--color-text-primary);
     overflow: hidden;
     font-family: var(--font-poppins);
     -webkit-tap-highlight-color: transparent;
+    text-rendering: geometricPrecision;
+  }
+
+  ::selection {
+    background: rgba(0, 240, 255, 0.22);
+    color: white;
   }
 }
 
@@ -54,6 +65,18 @@
     padding: 1.5rem;
     backdrop-filter: blur(24px);
   }
+
+  .ocean-glow {
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.12), 0 0 80px rgba(255, 45, 111, 0.08);
+  }
+
+  .heartbeat {
+    animation: heartbeat 1.8s ease-in-out infinite;
+  }
+
+  .breathing-glow {
+    animation: breathingGlow 3.2s ease-in-out infinite;
+  }
   
   .btn-primary {
     width: 100%;
@@ -78,4 +101,16 @@
     transform: translateY(-0.125rem);
     box-shadow: 0 12px 40px rgba(255,45,111,0.6);
   }
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  25% { transform: scale(1.04); }
+  50% { transform: scale(0.98); }
+  75% { transform: scale(1.02); }
+}
+
+@keyframes breathingGlow {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.16)); opacity: 0.9; }
+  50% { filter: drop-shadow(0 0 24px rgba(255, 45, 111, 0.24)); opacity: 1; }
 }
